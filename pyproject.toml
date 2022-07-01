@@ -5,6 +5,9 @@ description = "The core for a fast and modern graphql client designed with simpl
 authors = ["Daniel Seifert <info@danielseifert.ch>"]
 maintainers = ["Daniel Seifert <info@danielseifert.ch>"]
 readme = "README.md"
+homepage = "https://qlient-org.github.io/python-qlient/"
+repository = "https://github.com/qlient-org/python-qlient"
+documentation = "https://qlient-org.github.io/python-qlient/"
 keywords = ["graphql", "client", "api", "query", "mutation"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -20,6 +23,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+packages = [
+    { include = "qlient", from = "src" }
+]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 importlib-metadata = "^4.11.4"
@@ -28,7 +35,10 @@ platformdirs = "^2.5.2"
 [tool.poetry.dev-dependencies]
 coverage = "^6.4.1"
 pytest = "^7.1.2"
+pytest-asyncio = "^0.18.3"
+pytest-cov = "^3.0.0"
 black = "^22.3.0"
+strawberry-graphql = "^0.114.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

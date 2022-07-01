@@ -80,3 +80,6 @@ venv.bak/
 /site
 
 .idea/
+
+# install stamp
+.install.stamp
