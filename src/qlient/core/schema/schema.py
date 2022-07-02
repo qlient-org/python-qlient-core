@@ -1,85 +1,57 @@
 import logging
-from typing import Optional, Dict
+import typing
 
 from qlient.core import __meta__
 from qlient.core._types import RawSchema
-from qlient.core.caches import Cache
-from qlient.core.schema.loaders import load_schema, load_schema_async
 from qlient.core.schema.models import Type, Directive
 from qlient.core.schema.parser import parse_schema, ParseResult
-from qlient.core.schema.providers import SchemaProvider, AsyncSchemaProvider
-from qlient.core.settings import Settings
 
 logger = logging.getLogger(__meta__.__title__)
+
+SchemaProviderType = typing.Type["SchemaProvider"]
 
 
 class Schema:
     """Represents a graphql schema"""
 
     @classmethod
-    def load(
+    def from_raw(
         cls,
-        provider: SchemaProvider,
-        settings: Optional[Settings],
-        cache: Optional[Cache],
+        raw_schema: RawSchema,
+        provider: SchemaProviderType,
     ) -> "Schema":
         """Class method to load the schema synchronously
 
         Args:
+            raw_schema: holds the raw schema
             provider: holds the schema provider
-            settings: holds the client settings
-            cache: holds the cache to use
 
         Returns:
             A introspected and ready to use schema
         """
-        raw_schema: RawSchema = load_schema(provider, cache)
         parse_result: ParseResult = parse_schema(raw_schema)
-        return cls(parse_result, provider, settings, cache)
-
-    @classmethod
-    async def load_async(
-        cls,
-        provider: AsyncSchemaProvider,
-        settings: Optional[Settings],
-        cache: Optional[Cache],
-    ) -> "Schema":
-        """Class method to load the schema asynchronously
-
-        Args:
-            provider: holds the schema provider
-            settings: holds the client settings
-            cache: holds the cache to use
-
-        Returns:
-            A introspected and ready to use schema
-        """
-        raw_schema: RawSchema = await load_schema_async(provider, cache)
-        parse_result: ParseResult = parse_schema(raw_schema)
-        return cls(parse_result, provider, settings, cache)
+        return cls(raw_schema, parse_result, provider)
 
     def __init__(
         self,
+        raw_schema: RawSchema,
         parse_result,
-        provider: SchemaProvider,
-        settings: Optional[Settings] = None,
-        cache: Optional[Cache] = None,
+        provider: SchemaProviderType,
     ):
-        self.schema_provider: SchemaProvider = provider
-        self.settings: Settings = settings or Settings()
-        self.cache: Optional[Cache] = cache
+        self.raw_schema: RawSchema = raw_schema
+        self.schema_provider: SchemaProviderType = provider
 
-        self.query_type: Optional[Type] = parse_result.query_type
-        self.mutation_type: Optional[Type] = parse_result.mutation_type
-        self.subscription_type: Optional[Type] = parse_result.subscription_type
-        self.types_registry: Dict[str, Type] = parse_result.types
-        self.directives_registry: Dict[str, Directive] = parse_result.directives
+        self.query_type: typing.Optional[Type] = parse_result.query_type
+        self.mutation_type: typing.Optional[Type] = parse_result.mutation_type
+        self.subscription_type: typing.Optional[Type] = parse_result.subscription_type
+        self.types_registry: typing.Dict[str, Type] = parse_result.types
+        self.directives_registry: typing.Dict[str, Directive] = parse_result.directives
         logger.debug("Schema successfully introspected")
 
-    def __getattr__(self, key) -> Optional[Type]:
+    def __getattr__(self, key) -> typing.Optional[Type]:
         return self[key]
 
-    def __getitem__(self, key) -> Optional[Type]:
+    def __getitem__(self, key) -> typing.Optional[Type]:
         return self.types_registry.get(key)
 
     def __str__(self) -> str:

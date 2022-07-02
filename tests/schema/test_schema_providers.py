@@ -1,21 +1,5 @@
-from qlient.core._types import (
-    GraphQLQueryType,
-    GraphQLVariablesType,
-    GraphQLOperationNameType,
-    GraphQLContextType,
-    GraphQLRootType,
-    GraphQLReturnType,
-)
-
-
 # skipcq: PY-D0003
-def test_static_schema_provider():
-    from qlient.core.schema.providers import StaticSchemaProvider
-    from _schema import raw_schema
-
-    my_provider = StaticSchemaProvider(raw_schema, cache_key="My Static Key")
-    assert my_provider.load_schema() == raw_schema
-    assert my_provider.schema_cache_key == "My Static Key"
+from qlient.core.models import GraphQLRequest, GraphQLResponse
 
 
 # skipcq: PY-D0003
@@ -75,20 +59,16 @@ def test_backend_schema_provider():
     from qlient.core.backends import Backend
 
     class MyBackend(Backend):
-        def execute_query(
-            self,
-            query: GraphQLQueryType,
-            variables: GraphQLVariablesType = None,
-            operation_name: GraphQLOperationNameType = None,
-            context: GraphQLContextType = None,
-            root: GraphQLRootType = None,
-        ) -> GraphQLReturnType:
-            assert operation_name == BackendSchemaProvider.INTROSPECTION_OPERATION_NAME
-            assert query == BackendSchemaProvider.INTROSPECTION_QUERY
-            assert variables == {}
-            assert context is None
-            assert root is None
-            return {"data": {"__schema": {"foo": "bar"}}}
+        def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
+            assert (
+                request.operation_name
+                == BackendSchemaProvider.INTROSPECTION_OPERATION_NAME
+            )
+            assert request.query == BackendSchemaProvider.INTROSPECTION_QUERY
+            assert request.variables == {}
+            assert request.context is None
+            assert request.root is None
+            return GraphQLResponse(request, {"data": {"__schema": {"foo": "bar"}}})
 
         def execute_mutation(self, *args, **kwargs):
             pass

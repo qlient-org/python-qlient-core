@@ -6,8 +6,9 @@ import pathlib
 from typing import Union, IO
 
 from qlient.core import __meta__
-from qlient.core._types import RawSchema
-from qlient.core.backends import Backend, AsyncBackend
+from qlient.core.backends import Backend
+from qlient.core.models import GraphQLRequest
+from qlient.core.schema.schema import Schema
 
 logger = logging.getLogger(__meta__.__title__)
 
@@ -20,7 +21,7 @@ class SchemaProvider(abc.ABC):
     """
 
     @abc.abstractmethod
-    def load_schema(self) -> RawSchema:
+    def load_schema(self) -> Schema:
         """Abstract method to load the schema.
 
         This function gets called in order to load the schema from the source.
@@ -45,35 +46,6 @@ class SchemaProvider(abc.ABC):
         raise NotImplementedError
 
 
-class StaticSchemaProvider(SchemaProvider):
-    """Simple schema provider that returns a previously declared schema."""
-
-    def __init__(self, raw_schema: RawSchema, cache_key: str):
-        self.raw_schema = raw_schema
-        self._cache_key = cache_key
-
-    def load_schema(self) -> RawSchema:
-        """Method that returns the schema that was passed by in the __init__ function.
-
-        Returns:
-            The schema that was passed by in the __init__ function.
-        """
-        return self.raw_schema
-
-    @property
-    def schema_cache_key(self) -> str:
-        """Property to return the cache key for this schema.
-
-        To uniquely identify a schema in the cache it needs a unique key.
-        Caching does not make sense for this provider, matter of fact, it's actually slower to use caching
-        when you have a static schema provider because there are more calls being made.
-
-        Returns:
-            the unique cache key of this schema.
-        """
-        return self._cache_key
-
-
 class FileSchemaProvider(SchemaProvider):
     """Schema provider to read the schema from the file."""
 
@@ -87,7 +59,7 @@ class FileSchemaProvider(SchemaProvider):
         self.filepath: str = filepath or file.name
         self.file = file
 
-    def load_schema(self) -> RawSchema:
+    def load_schema(self) -> Schema:
         """Method to load the schema from the local file
 
         Returns:
@@ -96,7 +68,8 @@ class FileSchemaProvider(SchemaProvider):
         logger.debug(f"Reading local schema from `{self.file}`")
         import json
 
-        return json.load(self.file)
+        raw_schema = json.load(self.file)
+        return Schema.from_raw(self, raw_schema)
 
     @property
     def schema_cache_key(self) -> str:
@@ -215,19 +188,20 @@ class BackendSchemaProvider(SchemaProvider):
     def __init__(self, backend: Backend):
         self.backend: Backend = backend
 
-    def load_schema(self) -> RawSchema:
+    def load_schema(self) -> Schema:
         """Send the introspection query to the backend and return the given schema
 
         Returns:
             the given schema from the backend.
         """
         logger.debug(f"Loading remote schema using `{self.backend}`")
-        schema_content = self.backend.execute_query(
+        request = GraphQLRequest(
             query=self.INTROSPECTION_QUERY,
             operation_name=self.INTROSPECTION_OPERATION_NAME,
             variables={},
         )
-        return schema_content["data"]["__schema"]
+        schema_content = self.backend.execute_query(request)
+        return Schema.from_raw(self, schema_content.data["__schema"])
 
     @property
     def schema_cache_key(self) -> str:
@@ -239,74 +213,3 @@ class BackendSchemaProvider(SchemaProvider):
             the cache key as defined by the backend.
         """
         return self.backend.schema_identifier
-
-
-class AsyncSchemaProvider(SchemaProvider, abc.ABC):
-    """Super class for all async schema providers
-
-    This makes it easy to create your own async schema provider anytime.
-    """
-
-    @abc.abstractmethod
-    async def load_schema(self) -> RawSchema:
-        """Abstract method to load the schema asynchronously.
-
-        This function gets called in order to load the schema from the source.
-        Note that this function is not called with any arguments.
-
-        Returns:
-            The raw schema in it's json form
-        """
-        raise NotImplementedError
-
-    @property
-    @abc.abstractmethod
-    def schema_cache_key(self) -> str:
-        """A key that uniquely identifies the schema for a specific backend in the cache
-
-        For example this can be a unique url or hostname.
-        Or even a static key if the schema remains the same for the backend.
-
-        Returns:
-            a string that uniquely identifies the schema
-        """
-        raise NotImplementedError
-
-
-class AsyncBackendSchemaProvider(AsyncSchemaProvider, BackendSchemaProvider):
-    """Schema provider to read the schema asynchronously using the backend.
-
-    This provider uses an introspection query to load the schema directly from the backend.
-
-    NOTE! This only works when the graphql backend has allowed introspection.
-    """
-
-    backend: AsyncBackend  # just a type hint
-
-    async def load_schema(self) -> RawSchema:
-        """Send the introspection query asynchronously to the backend and return the given schema
-
-        Returns:
-            the given schema from the backend.
-        """
-        logger.debug(f"Loading remote schema using `{self.backend}`")
-        schema_content = await self.backend.execute_query(
-            query=self.INTROSPECTION_QUERY,
-            operation_name=self.INTROSPECTION_OPERATION_NAME,
-            variables={},
-        )
-        return schema_content["data"]["__schema"]
-
-    @property
-    def schema_cache_key(self) -> str:
-        """Property to return the cache key that uniquely identifies this schema in the cache.
-
-        This uses the backends cache key property as cache key.
-
-        Returns:
-            the cache key as defined by the backend.
-        """
-        return super(BackendSchemaProvider, self).schema_cache_key
-
-    def __init__(self, backend: AsyncBackend):
-        super(BackendSchemaProvider, self).__init__(backend)

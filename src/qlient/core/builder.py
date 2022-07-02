@@ -4,8 +4,8 @@ from typing import Optional, List, Dict, Any, Tuple
 from qlient.core.schema.models import (
     Input as SchemaInput,
     Type as SchemaType,
-    Directive as SchemaDirective,
     Field as SchemaField,
+    Directive as SchemaDirective,
     TypeRef as SchemaTypeRef,
 )
 from qlient.core.schema.schema import Schema
@@ -261,7 +261,7 @@ class PreparedField:
 
     def __init__(self):
         # the graphql schema field type
-        self.schema_field: Optional[Field] = None
+        self.schema_field: Optional[SchemaField] = None
         # the name of the field
         self.name: Optional[str] = None
         # the alias of the field
@@ -819,13 +819,13 @@ class TypedGQLQueryBuilder:
     def __init__(
         self,
         operation_type: str,
-        operation_field: Field,
+        operation_field: SchemaField,
         schema: Schema,
         settings: Settings,
     ):
         self.settings: Settings = settings
         self.op_type: str = operation_type
-        self.op_field: Field = operation_field
+        self.op_field: SchemaField = operation_field
         self.op_name: str = self.op_field.name
         self.op_inputs: Dict[str, SchemaInput] = self.op_field.arg_name_to_arg
         self.op_output: Optional[SchemaType] = schema.types_registry.get(

@@ -7,7 +7,28 @@ from qlient.core._types import (
     GraphQLExtensions,
     GraphQLData,
     GraphQLReturnType,
+    GraphQLReturnTypeGenerator,
+    GraphQLContextType,
+    GraphQLRootType,
 )
+
+
+class GraphQLRequest:
+    """Represents the graph ql request"""
+
+    def __init__(
+        self,
+        query: GraphQLQueryType = None,
+        variables: GraphQLVariablesType = None,
+        operation_name: GraphQLOperationNameType = None,
+        context: GraphQLContextType = None,
+        root: GraphQLRootType = None,
+    ):
+        self.query: GraphQLQueryType = query
+        self.variables: GraphQLVariablesType = variables
+        self.operation_name: GraphQLOperationNameType = operation_name
+        self.context: GraphQLContextType = context
+        self.root: GraphQLRootType = root
 
 
 class GraphQLResponse:
@@ -15,17 +36,11 @@ class GraphQLResponse:
 
     def __init__(
         self,
+        request: GraphQLRequest,
         response: GraphQLReturnType,
-        query: GraphQLQueryType,
-        variables: GraphQLVariablesType = None,
-        operation_name: GraphQLOperationNameType = None,
     ):
+        self.request: GraphQLRequest = request
         self.raw: GraphQLReturnType = response
-
-        # request information
-        self.query: GraphQLQueryType = query
-        self.variables: GraphQLVariablesType = variables
-        self.operation_name: GraphQLOperationNameType = operation_name
 
         # response parsing
         self.data: GraphQLData = self.raw.get("data")
@@ -34,8 +49,10 @@ class GraphQLResponse:
 
 
 class GraphQLResponseGenerator:
-    pass
-
-
-class AsyncGraphQLResponseGenerator(GraphQLResponseGenerator):
-    pass
+    def __init__(
+        self,
+        request: GraphQLRequest,
+        response: GraphQLReturnTypeGenerator,
+    ):
+        self.request: GraphQLRequest = request
+        self.generator: GraphQLReturnTypeGenerator = response

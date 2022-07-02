@@ -1,6 +1,7 @@
 """This file contains the graphql schema parser functions"""
 from typing import Dict, Optional, List
 
+from qlient.core._types import RawSchema
 from qlient.core.exceptions import NoTypesFound
 from qlient.core.schema.models import Type, Directive
 
@@ -125,7 +126,7 @@ def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
     return directives_dict
 
 
-def parse_schema(schema: Dict) -> ParseResult:
+def parse_schema(schema: RawSchema) -> ParseResult:
     """Parse the given graphql schema and return the parsed result
 
     Args:
