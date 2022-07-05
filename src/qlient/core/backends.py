@@ -4,8 +4,6 @@ import abc
 from qlient.core.models import (
     GraphQLRequest,
     GraphQLResponse,
-    GraphQLResponseIterator,
-    AsyncGraphQLResponseIterator,
 )
 
 
@@ -37,7 +35,7 @@ class Backend(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponseIterator:
+    def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
         """Abstract method to initialize a subscription on this backend.
 
         Args:
@@ -77,9 +75,7 @@ class AsyncBackend(Backend, abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def execute_subscription(
-        self, request: GraphQLRequest
-    ) -> AsyncGraphQLResponseIterator:
+    async def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
         """Abstract method to initialize a subscription on this backend asynchronously.
 
         Args:

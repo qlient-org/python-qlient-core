@@ -1,6 +1,6 @@
 import abc
 import itertools
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Dict, Iterable, List, Optional
 
 from qlient.core._internal import await_if_coro
 from qlient.core._types import GraphQLContextType, GraphQLRootType, GraphQLQueryType
@@ -8,9 +8,7 @@ from qlient.core.backends import Backend
 from qlient.core.builder import TypedGQLQueryBuilder, Fields
 from qlient.core.models import (
     GraphQLResponse,
-    GraphQLResponseIterator,
     GraphQLRequest,
-    AsyncGraphQLResponseIterator,
 )
 from qlient.core.plugins import Plugin, apply_pre, apply_post
 from qlient.core.schema.models import Field as SchemaField
@@ -308,9 +306,7 @@ class ServiceProxy(abc.ABC):
     def get_bindings(self) -> Dict[str, OperationProxy]:
         """Abstract base method to get the service bindings"""
 
-    def send(
-        self, request: GraphQLRequest
-    ) -> Union[GraphQLResponse, GraphQLResponseIterator]:
+    def send(self, request: GraphQLRequest) -> GraphQLResponse:
         """The method that sends the request through plugins onto the backend.
 
         Args:
@@ -325,18 +321,14 @@ class ServiceProxy(abc.ABC):
         return response
 
     @abc.abstractmethod
-    def execute(
-        self, request: GraphQLRequest
-    ) -> Union[GraphQLResponse, GraphQLResponseIterator]:
+    def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Abstract base method that sends the query to the backend"""
 
 
 class AsyncServiceProxy(ServiceProxy, abc.ABC):
     """Base class for all async service proxies"""
 
-    async def send(
-        self, request: GraphQLRequest
-    ) -> Union[GraphQLResponse, AsyncGraphQLResponseIterator]:
+    async def send(self, request: GraphQLRequest) -> GraphQLResponse:
         """The method that sends the request through plugins onto the backend asynchronously.
 
         Args:
@@ -351,9 +343,7 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
         return response
 
     @abc.abstractmethod
-    async def execute(
-        self, request: GraphQLRequest
-    ) -> Union[GraphQLResponse, AsyncGraphQLResponseIterator]:
+    async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Abstract base method that sends the query to the backend"""
 
 
@@ -422,7 +412,7 @@ class SubscriptionServiceProxy(ServiceProxy):
 
     _operation_proxy_type = SubscriptionProxy
 
-    def execute(self, request: GraphQLRequest) -> GraphQLResponseIterator:
+    def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Send a query to the graphql server"""
         return self.backend.execute_subscription(request)
 
@@ -446,6 +436,6 @@ class AsyncSubscriptionServiceProxy(SubscriptionServiceProxy, AsyncServiceProxy)
 
     _operation_proxy_type = AsyncSubscriptionProxy
 
-    async def execute(self, request: GraphQLRequest) -> AsyncGraphQLResponseIterator:
+    async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Send a subscription asynchronously to the graphql server"""
         return await await_if_coro(self.backend.execute_subscription(request))

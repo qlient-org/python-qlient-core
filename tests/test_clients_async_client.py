@@ -1,7 +1,6 @@
 import pytest
 
 from qlient.core import AsyncClient, GraphQLResponse, OutOfAsyncContext
-from qlient.core.models import AsyncGraphQLResponseIterator
 
 
 @pytest.mark.asyncio
@@ -41,7 +40,7 @@ async def test_async_client_subscription(async_strawberry_backend):
     count = 0
     async with AsyncClient(async_strawberry_backend) as client:
         result = await client.subscription.count(target=5)
-        assert isinstance(result, AsyncGraphQLResponseIterator)
+        assert isinstance(result, GraphQLResponse)
         async for num in result:
             assert count == num.data["count"]
             count += 1

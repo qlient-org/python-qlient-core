@@ -1,7 +1,6 @@
 import pytest
 
 from qlient.core import GraphQLResponse
-from qlient.core.models import AsyncGraphQLResponseIterator
 
 
 @pytest.mark.asyncio
@@ -46,13 +45,13 @@ async def test_backend_execute_subscription_iterator(
                 except StopIteration:
                     raise StopAsyncIteration
 
-        return AsyncGraphQLResponseIterator(request, AIterator(messages))
+        return GraphQLResponse(request, AIterator(messages))
 
     monkeypatch.setattr(async_strawberry_backend, "execute_subscription", mock)
 
     response = await async_strawberry_backend.execute_subscription(None)
 
-    assert isinstance(response, AsyncGraphQLResponseIterator)
+    assert isinstance(response, GraphQLResponse)
 
     async for message in response:
         assert message in messages
@@ -69,13 +68,13 @@ async def test_backend_execute_subscription_generator(
             for message in messages:
                 yield message
 
-        return AsyncGraphQLResponseIterator(request, generator())
+        return GraphQLResponse(request, generator())
 
     monkeypatch.setattr(async_strawberry_backend, "execute_subscription", mock)
 
     response = await async_strawberry_backend.execute_subscription(None)
 
-    assert isinstance(response, AsyncGraphQLResponseIterator)
+    assert isinstance(response, GraphQLResponse)
 
     async for message in response:
         assert message in messages

@@ -1,7 +1,10 @@
 import abc
 from typing import List
 
-from qlient.core.models import GraphQLRequest, GraphQLResponse
+from qlient.core.models import (
+    GraphQLRequest,
+    GraphQLResponse,
+)
 
 
 class Plugin(abc.ABC):

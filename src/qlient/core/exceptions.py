@@ -22,17 +22,5 @@ class NoTypesFound(SchemaParseException):
     """Indicates that the schema does not have any types defined"""
 
 
-class SchemaDetectionException(QlientException):
-    """Indicates a failure in detecting the schema provider"""
-
-    def __init__(self, location: str, *args):
-        self.location: str = location
-        super(SchemaDetectionException, self).__init__(*args)
-
-
-class UnsupportedFieldException(QlientException):
-    """Indicates that an unsupported field was given as input"""
-
-
 class OutOfAsyncContext(QlientException):
     """Indicates that you are running out of an async context"""

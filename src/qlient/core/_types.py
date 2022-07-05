@@ -24,6 +24,9 @@ GraphQLReturnTypeIterator = Union[
 AsyncGraphQLReturnTypeIterator = Union[
     AsyncIterator[GraphQLReturnType], AsyncGenerator[GraphQLReturnType, None]
 ]
+GraphQLAnyReturnType = Union[
+    GraphQLReturnType, GraphQLReturnTypeIterator, AsyncGraphQLReturnTypeIterator
+]
 GraphQLContextType = Any
 GraphQLRootType = Any
 

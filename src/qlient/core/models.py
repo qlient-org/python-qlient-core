@@ -1,5 +1,4 @@
 """This module contains the qlient models"""
-
 from typing import Optional, List, Dict, Any, Tuple
 
 from qlient.core._types import (
@@ -9,11 +8,9 @@ from qlient.core._types import (
     GraphQLErrors,
     GraphQLExtensions,
     GraphQLData,
-    GraphQLReturnType,
-    GraphQLReturnTypeIterator,
-    AsyncGraphQLReturnTypeIterator,
     GraphQLContextType,
     GraphQLRootType,
+    GraphQLAnyReturnType,
 )
 from qlient.core.schema.models import (
     Input as SchemaInput,
@@ -710,51 +707,25 @@ class GraphQLResponse:
     def __init__(
         self,
         request: GraphQLRequest,
-        response: GraphQLReturnType,
+        response: GraphQLAnyReturnType,
     ):
         self.request: GraphQLRequest = request
-        self.raw: GraphQLReturnType = response
+        self.raw: GraphQLAnyReturnType = response
 
-        # response parsing
-        self.data: GraphQLData = self.raw.get("data")
-        self.errors: GraphQLErrors = self.raw.get("errors")
-        self.extensions: GraphQLExtensions = self.raw.get("extensions")
+        self.data = None
+        self.errors = None
+        self.extensions = None
 
-
-class GraphQLResponseIterator:
-    """Represents a graph ql subscription response generator"""
-
-    iterator: GraphQLReturnTypeIterator
-
-    def __init__(
-        self,
-        request: GraphQLRequest,
-        response,
-    ):
-        self.request: GraphQLRequest = request
-        self.iterator = response
+        if isinstance(self.raw, dict):
+            # response parsing
+            self.data: GraphQLData = self.raw.get("data")
+            self.errors: GraphQLErrors = self.raw.get("errors")
+            self.extensions: GraphQLExtensions = self.raw.get("extensions")
 
     def __iter__(self):
-        return iter(self.iterator)
-
-
-class AsyncGraphQLResponseIterator(GraphQLResponseIterator):
-    """Represents a async graph ql subscription response generator"""
-
-    iterator: AsyncGraphQLReturnTypeIterator
-
-    def __init__(
-        self,
-        request: GraphQLRequest,
-        response: AsyncGraphQLReturnTypeIterator,
-    ):
-        super(AsyncGraphQLResponseIterator, self).__init__(request, response)
-
-    def __iter__(self):
-        raise NotImplementedError("Not in async for loop")
-
-    def __next__(self):
-        raise NotImplementedError("Not in async for loop")
+        # for a synchronous subscription
+        return iter(self.raw)
 
     def __aiter__(self):
-        return self.iterator.__aiter__()
+        # for an asynchronous subscription
+        return self.raw.__aiter__()

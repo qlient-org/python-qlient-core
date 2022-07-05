@@ -1,4 +1,4 @@
-from qlient.core import GraphQLResponse, GraphQLResponseIterator
+from qlient.core import GraphQLResponse
 
 
 def test_backend_execute_query(strawberry_backend, monkeypatch):
@@ -25,13 +25,13 @@ def test_backend_execute_subscription_iterator(strawberry_backend, monkeypatch):
     messages = [{"foo": "bar"}] * 10
 
     def mock(request):
-        return GraphQLResponseIterator(request, messages)
+        return GraphQLResponse(request, messages)
 
     monkeypatch.setattr(strawberry_backend, "execute_subscription", mock)
 
     response = strawberry_backend.execute_subscription(None)
 
-    assert isinstance(response, GraphQLResponseIterator)
+    assert isinstance(response, GraphQLResponse)
 
     for message in response:
         assert message in messages
@@ -44,13 +44,13 @@ def test_backend_execute_subscription_generator(strawberry_backend, monkeypatch)
         def generator():
             yield from messages
 
-        return GraphQLResponseIterator(request, generator())
+        return GraphQLResponse(request, generator())
 
     monkeypatch.setattr(strawberry_backend, "execute_subscription", mock)
 
     response = strawberry_backend.execute_subscription(None)
 
-    assert isinstance(response, GraphQLResponseIterator)
+    assert isinstance(response, GraphQLResponse)
 
     for message in response:
         assert message in messages

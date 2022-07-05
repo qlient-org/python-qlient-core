@@ -12,9 +12,7 @@ from qlient.core import (
     AsyncBackend,
     GraphQLRequest,
     GraphQLResponse,
-    GraphQLResponseIterator,
 )
-from qlient.core.models import AsyncGraphQLResponseIterator
 
 project_dir = pathlib.Path(pathlib.Path().resolve())
 
@@ -131,9 +129,7 @@ def strawberry_backend(strawberry_schema) -> Backend:
         def execute_mutation(self, request: GraphQLRequest) -> GraphQLResponse:
             return self.execute_query(request)
 
-        def execute_subscription(
-            self, request: GraphQLRequest
-        ) -> GraphQLResponseIterator:
+        def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
             raise NotImplementedError
 
     return StrawberryBackend()
@@ -164,7 +160,7 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
 
         async def execute_subscription(
             self, request: GraphQLRequest
-        ) -> AsyncGraphQLResponseIterator:
+        ) -> GraphQLResponse:
             generator = await strawberry_schema.subscribe(
                 query=request.query,
                 variable_values=request.variables,
@@ -174,6 +170,6 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
             )
             if isinstance(generator, ExecutionResult):
                 raise ValueError(f"Failed to initiate subscription: {generator}")
-            return AsyncGraphQLResponseIterator(request, generator)
+            return GraphQLResponse(request, generator)
 
     return AsyncStrawberryBackend()
