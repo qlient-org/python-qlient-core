@@ -32,3 +32,7 @@ class SchemaDetectionException(QlientException):
 
 class UnsupportedFieldException(QlientException):
     """Indicates that an unsupported field was given as input"""
+
+
+class OutOfAsyncContext(QlientException):
+    """Indicates that you are running out of an async context"""

@@ -4,7 +4,10 @@ from typing import (
     List,
     Optional,
     Any,
+    Iterator,
+    AsyncIterator,
     Generator,
+    AsyncGenerator,
 )
 
 JSON = Union[str, int, float, bool, None, Dict[str, "JSON"], List["JSON"]]
@@ -15,7 +18,12 @@ GraphQLQueryType = str
 GraphQLVariablesType = Optional[Dict[str, JSON]]
 GraphQLOperationNameType = Optional[str]
 GraphQLReturnType = Dict[str, JSON]
-GraphQLReturnTypeGenerator = Generator[GraphQLReturnType, None, None]
+GraphQLReturnTypeIterator = Union[
+    Iterator[GraphQLReturnType], Generator[GraphQLReturnType, None, None]
+]
+AsyncGraphQLReturnTypeIterator = Union[
+    AsyncIterator[GraphQLReturnType], AsyncGenerator[GraphQLReturnType, None]
+]
 GraphQLContextType = Any
 GraphQLRootType = Any
 

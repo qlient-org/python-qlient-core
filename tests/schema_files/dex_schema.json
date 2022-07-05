@@ -1,0 +1,3346 @@
+{
+  "queryType": {
+    "name": "Query"
+  },
+  "mutationType": null,
+  "subscriptionType": null,
+  "types": [
+    {
+      "kind": "UNION",
+      "name": "EvolutionCriteria",
+      "description": "EvolutionCriteria can be one or more of several possible different types",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": null,
+      "possibleTypes": [
+        {
+          "kind": "OBJECT",
+          "name": "Move",
+          "ofType": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Item",
+          "ofType": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Type",
+          "ofType": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Location",
+          "ofType": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Gender",
+          "ofType": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OtherEvolutionCriteria",
+          "ofType": null
+        }
+      ]
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Pokemon",
+      "description": "query for an individual Pokemon's info",
+      "fields": [
+        {
+          "name": "sprites",
+          "description": "array of Sprite objects",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Sprites",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pokedex_entries",
+          "description": "array of DexEntry objects",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DexEntry",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "evolution_criteria",
+          "description": "array of all criteria that must be met for the queried Pokemon to evolve",
+          "args": [
+            {
+              "name": "game",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "UNION",
+              "name": "EvolutionCriteria",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "evolution_trigger",
+          "description": "what triggers the queried Pokemon to evolve if all evolution criteria have been met",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "evolves_to",
+          "description": "array of Pokemon that the queried Pokemon can evolve into",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "evolves_from",
+          "description": "Pokemon that the queried Pokemon evolves from",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Pokemon",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "evolution_chain_start",
+          "description": "the Pokemon at the 'beginning' of the queried Pokemon's evolution chain (i.e. Charmander, even if you requested Charizard)",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "moves",
+          "description": "array of Move objects",
+          "args": [
+            {
+              "name": "game",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Move",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "games",
+          "description": "array of Games that the queried Pokemon is found in",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "locations",
+          "description": "array of Locations that the queried Pokemon can be found in",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Location",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "abilities",
+          "description": "array of Abilities that the queried Pokemon can have",
+          "args": [
+            {
+              "name": "game",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Ability",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "egg_groups",
+          "description": "array of the different EggGroups that the queried Pokemon belongs to",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "EggGroup",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "types",
+          "description": "array of all the different Types of the queried Pokemon",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "gender_rate",
+          "description": "percent chance of the queried Pokémon being female (-1 for genderless)",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Float",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "base_stats",
+          "description": "base stats of the queried Pokemon",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Stats",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "genus",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "generation",
+          "description": "which generation the queried Pokemon debuted in",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "is_baby",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "base_experience",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "nat_dex_num",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "height",
+          "description": "height in meters",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "weight",
+          "description": "weight in kilograms",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "color",
+          "description": "basic color of the queried Pokemon",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "dominant_color",
+          "description": "dominant color of the queried Pokemon's image",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Dominant_Color",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "capture_rate",
+          "description": "capture rate of the queried Pokemon when using a normal Pokeball at full health",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "growth_rate",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "shape",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "base_happiness",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "hatch_counter",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "is_default",
+          "description": "true if it's the default form, false if it's a variant (i.e. alola, galar, mega, etc)",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "variants",
+          "description": "array of different variant forms of the queried Pokemon",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "SCALAR",
+      "name": "String",
+      "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "SCALAR",
+      "name": "Float",
+      "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "SCALAR",
+      "name": "Boolean",
+      "description": "The `Boolean` scalar type represents `true` or `false`.",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "SCALAR",
+      "name": "Int",
+      "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Dominant_Color",
+      "description": null,
+      "fields": [
+        {
+          "name": "light",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "dark",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "original",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "r",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "g",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "b",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Type",
+      "description": "Pokemon type (i.e. Grass, Electric, Water, etc)",
+      "fields": [
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "double_damage_from",
+          "description": "array of super effective Types that the queried type receives double damage from",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "double_damage_to",
+          "description": "array of Types the queried type inflicts double damage upon",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "half_damage_from",
+          "description": "array of not very effective Types the queried type receives half damage from",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "half_damage_to",
+          "description": "array of Types the queried type inflicts double damage upon",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "no_damage_from",
+          "description": "array of ineffective Types the queried type receives no damage from",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "no_damage_to",
+          "description": "array of Types the queried type inflicts no damage upon",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pokemon",
+          "description": "array of Pokemon that have the queried Type",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "EggGroup",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pokemon",
+          "description": "array of Pokemon in the queried egg group",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Ability",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "is_hidden",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "effect",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pokemon",
+          "description": "array of Pokemon that can have the queried Ability",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Sprites",
+      "description": null,
+      "fields": [
+        {
+          "name": "back_default",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "back_female",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "back_shiny",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "back_shiny_female",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "front_default",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "front_female",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "front_shiny",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "front_shiny_female",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "OtherEvolutionCriteria",
+      "description": null,
+      "fields": [
+        {
+          "name": "evolution_criteria_name",
+          "description": "example response: time_of_day",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "value",
+          "description": "example response: night",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Stats",
+      "description": null,
+      "fields": [
+        {
+          "name": "hp",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "attack",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "defense",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "special_attack",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "special_defense",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "speed",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "DexEntry",
+      "description": null,
+      "fields": [
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "game",
+          "description": "game/version the queried DexEntry is from",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Game",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Move",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "type",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Type",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "learn_methods",
+          "description": "level, egg, move tutor, tm/hm",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "MoveLearnMethod",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "power",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "accuracy",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pp",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "priority",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ailment",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "effect_chance",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "effect",
+          "description": "possible status condition effect",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "damage_class",
+          "description": "physical or special",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "original_games",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "MoveLearnMethod",
+      "description": null,
+      "fields": [
+        {
+          "name": "method",
+          "description": "how the Pokemon learns the queried Move",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "level_learned_at",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "games",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "MoveDescription",
+      "description": null,
+      "fields": [
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "games",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Location",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "region",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Region",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "games",
+          "description": "array of games/versions in which pokemon are found at the queried Location",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pokemon",
+          "description": "array of Pokemon that can be found at the queried Location",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Region",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "games",
+          "description": "array of Games the queried Region is found in",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "locations",
+          "description": "array of Locations that are in the queried Region",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Location",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Game",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "generation",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "regions",
+          "description": "array of Regions that are found in the queried Game",
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Region",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "NameAndId",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Item",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "effect",
+          "description": "Use in an evolution_criteria query; returns the name of the evolution criteria that must have been met for the Pokémon to have evolved",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "cost",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "bag_pocket",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "sprite",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Gender",
+      "description": null,
+      "fields": [
+        {
+          "name": "id",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "Query",
+      "description": null,
+      "fields": [
+        {
+          "name": "allPokemon",
+          "description": "get range of Pokemon starting from start variable",
+          "args": [
+            {
+              "name": "limit",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "filter",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Pokemon",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allAbilities",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Ability",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allTypes",
+          "description": null,
+          "args": [
+            {
+              "name": "start",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "end",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allEggGroups",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "EggGroup",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allLocations",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Location",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allMoves",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Move",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allRegions",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Region",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allGames",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Game",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "allItems",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Item",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "pokemon",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Pokemon",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ability",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "game",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Ability",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "type",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Type",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "eggGroup",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "EggGroup",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "location",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Location",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "move",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Move",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "region",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Region",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "game",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Game",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "item",
+          "description": null,
+          "args": [
+            {
+              "name": "id",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "Item",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "ENUM",
+      "name": "CacheControlScope",
+      "description": null,
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": [
+        {
+          "name": "PUBLIC",
+          "description": null,
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "PRIVATE",
+          "description": null,
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "possibleTypes": null
+    },
+    {
+      "kind": "SCALAR",
+      "name": "Upload",
+      "description": "The `Upload` scalar type represents a file upload.",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "__Schema",
+      "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.",
+      "fields": [
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "types",
+          "description": "A list of all types supported by this server.",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "queryType",
+          "description": "The type that query operations will be rooted at.",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "__Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "mutationType",
+          "description": "If this server supports mutation, the type that mutation operations will be rooted at.",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "__Type",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "subscriptionType",
+          "description": "If this server support subscription, the type that subscription operations will be rooted at.",
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "__Type",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "directives",
+          "description": "A list of all directives supported by this server.",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Directive",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "__Type",
+      "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.",
+      "fields": [
+        {
+          "name": "kind",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "ENUM",
+              "name": "__TypeKind",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "specifiedByUrl",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "fields",
+          "description": null,
+          "args": [
+            {
+              "name": "includeDeprecated",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "false"
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Field",
+                "ofType": null
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "interfaces",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "possibleTypes",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "enumValues",
+          "description": null,
+          "args": [
+            {
+              "name": "includeDeprecated",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "false"
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__EnumValue",
+                "ofType": null
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "inputFields",
+          "description": null,
+          "args": [
+            {
+              "name": "includeDeprecated",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "false"
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": null,
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__InputValue",
+                "ofType": null
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ofType",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "OBJECT",
+            "name": "__Type",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "ENUM",
+      "name": "__TypeKind",
+      "description": "An enum describing what kind of type a given `__Type` is.",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": [
+        {
+          "name": "SCALAR",
+          "description": "Indicates this type is a scalar.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "OBJECT",
+          "description": "Indicates this type is an object. `fields` and `interfaces` are valid fields.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "INTERFACE",
+          "description": "Indicates this type is an interface. `fields`, `interfaces`, and `possibleTypes` are valid fields.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "UNION",
+          "description": "Indicates this type is a union. `possibleTypes` is a valid field.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ENUM",
+          "description": "Indicates this type is an enum. `enumValues` is a valid field.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "INPUT_OBJECT",
+          "description": "Indicates this type is an input object. `inputFields` is a valid field.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "LIST",
+          "description": "Indicates this type is a list. `ofType` is a valid field.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "NON_NULL",
+          "description": "Indicates this type is a non-null. `ofType` is a valid field.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "__Field",
+      "description": "Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.",
+      "fields": [
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "args",
+          "description": null,
+          "args": [
+            {
+              "name": "includeDeprecated",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "false"
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__InputValue",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "type",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "__Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "isDeprecated",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "deprecationReason",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "__InputValue",
+      "description": "Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.",
+      "fields": [
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "type",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "__Type",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "defaultValue",
+          "description": "A GraphQL-formatted string representing the default value for this input value.",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "isDeprecated",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "deprecationReason",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "__EnumValue",
+      "description": "One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.",
+      "fields": [
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "isDeprecated",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "deprecationReason",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "__Directive",
+      "description": "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+      "fields": [
+        {
+          "name": "name",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "description",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "isRepeatable",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "locations",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "__DirectiveLocation",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "args",
+          "description": null,
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__InputValue",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "inputFields": null,
+      "interfaces": [],
+      "enumValues": null,
+      "possibleTypes": null
+    },
+    {
+      "kind": "ENUM",
+      "name": "__DirectiveLocation",
+      "description": "A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.",
+      "fields": null,
+      "inputFields": null,
+      "interfaces": null,
+      "enumValues": [
+        {
+          "name": "QUERY",
+          "description": "Location adjacent to a query operation.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "MUTATION",
+          "description": "Location adjacent to a mutation operation.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "SUBSCRIPTION",
+          "description": "Location adjacent to a subscription operation.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "FIELD",
+          "description": "Location adjacent to a field.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "FRAGMENT_DEFINITION",
+          "description": "Location adjacent to a fragment definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "FRAGMENT_SPREAD",
+          "description": "Location adjacent to a fragment spread.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "INLINE_FRAGMENT",
+          "description": "Location adjacent to an inline fragment.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "VARIABLE_DEFINITION",
+          "description": "Location adjacent to a variable definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "SCHEMA",
+          "description": "Location adjacent to a schema definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "SCALAR",
+          "description": "Location adjacent to a scalar definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "OBJECT",
+          "description": "Location adjacent to an object type definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "FIELD_DEFINITION",
+          "description": "Location adjacent to a field definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ARGUMENT_DEFINITION",
+          "description": "Location adjacent to an argument definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "INTERFACE",
+          "description": "Location adjacent to an interface definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "UNION",
+          "description": "Location adjacent to a union definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ENUM",
+          "description": "Location adjacent to an enum definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "ENUM_VALUE",
+          "description": "Location adjacent to an enum value definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "INPUT_OBJECT",
+          "description": "Location adjacent to an input object type definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "INPUT_FIELD_DEFINITION",
+          "description": "Location adjacent to an input object field definition.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ],
+      "possibleTypes": null
+    }
+  ],
+  "directives": [
+    {
+      "name": "cacheControl",
+      "description": null,
+      "locations": [
+        "FIELD_DEFINITION",
+        "OBJECT",
+        "INTERFACE"
+      ],
+      "args": [
+        {
+          "name": "maxAge",
+          "description": null,
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "scope",
+          "description": null,
+          "type": {
+            "kind": "ENUM",
+            "name": "CacheControlScope",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "include",
+      "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
+      "locations": [
+        "FIELD",
+        "FRAGMENT_SPREAD",
+        "INLINE_FRAGMENT"
+      ],
+      "args": [
+        {
+          "name": "if",
+          "description": "Included when true.",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "skip",
+      "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
+      "locations": [
+        "FIELD",
+        "FRAGMENT_SPREAD",
+        "INLINE_FRAGMENT"
+      ],
+      "args": [
+        {
+          "name": "if",
+          "description": "Skipped when true.",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "deprecated",
+      "description": "Marks an element of a GraphQL schema as no longer supported.",
+      "locations": [
+        "FIELD_DEFINITION",
+        "ARGUMENT_DEFINITION",
+        "INPUT_FIELD_DEFINITION",
+        "ENUM_VALUE"
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "description": "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String",
+            "ofType": null
+          },
+          "defaultValue": "\"No longer supported\""
+        }
+      ]
+    },
+    {
+      "name": "specifiedBy",
+      "description": "Exposes a URL that specifies the behaviour of this scalar.",
+      "locations": [
+        "SCALAR"
+      ],
+      "args": [
+        {
+          "name": "url",
+          "description": "The URL that specifies the behaviour of this scalar.",
+          "type": {
+            "kind": "NON_NULL",
+            "name": null,
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ]
+    }
+  ]
+}

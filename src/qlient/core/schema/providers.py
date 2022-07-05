@@ -6,6 +6,7 @@ import pathlib
 from typing import Union, IO
 
 from qlient.core import __meta__
+from qlient.core._internal import await_if_coro
 from qlient.core.backends import Backend
 from qlient.core.models import GraphQLRequest
 from qlient.core.schema.schema import Schema
@@ -32,19 +33,6 @@ class SchemaProvider(abc.ABC):
         """
         raise NotImplementedError
 
-    @property
-    @abc.abstractmethod
-    def schema_cache_key(self) -> str:
-        """A key that uniquely identifies the schema for a specific backend in the cache
-
-        For example this can be a unique url or hostname.
-        Or even a static key if the schema remains the same for the backend.
-
-        Returns:
-            a string that uniquely identifies the schema
-        """
-        raise NotImplementedError
-
 
 class FileSchemaProvider(SchemaProvider):
     """Schema provider to read the schema from the file."""
@@ -56,7 +44,7 @@ class FileSchemaProvider(SchemaProvider):
         if isinstance(file, pathlib.Path):
             filepath = str(file.resolve())
             file = file.open("r")
-        self.filepath: str = filepath or file.name
+        self.filepath: str = filepath or getattr(file, "name", None)
         self.file = file
 
     def load_schema(self) -> Schema:
@@ -69,18 +57,7 @@ class FileSchemaProvider(SchemaProvider):
         import json
 
         raw_schema = json.load(self.file)
-        return Schema.from_raw(self, raw_schema)
-
-    @property
-    def schema_cache_key(self) -> str:
-        """Property to return the cache key that uniquely identifies this schema.
-
-        This uses the absolute filepath as cache key.
-
-        Returns:
-            the absolute filepath
-        """
-        return self.filepath
+        return Schema(raw_schema, self)
 
 
 class BackendSchemaProvider(SchemaProvider):
@@ -201,15 +178,28 @@ class BackendSchemaProvider(SchemaProvider):
             variables={},
         )
         schema_content = self.backend.execute_query(request)
-        return Schema.from_raw(self, schema_content.data["__schema"])
+        return Schema(schema_content.data["__schema"], self)
 
-    @property
-    def schema_cache_key(self) -> str:
-        """Property to return the cache key that uniquely identifies this schema in the cache.
 
-        This uses the backends cache key property as cache key.
+class AsyncBackendSchemaProvider(BackendSchemaProvider):
+    """Schema provider to read the schema asynchronously using the backend.
+
+    This provider uses an introspection query to load the schema directly from the backend.
+
+    NOTE! This only works when the graphql backend has allowed introspection.
+    """
+
+    async def load_schema(self) -> Schema:
+        """Send the introspection query to the backend and return the given schema
 
         Returns:
-            the cache key as defined by the backend.
+            the given schema from the backend.
         """
-        return self.backend.schema_identifier
+        logger.debug(f"Loading remote schema using `{self.backend}`")
+        request = GraphQLRequest(
+            query=self.INTROSPECTION_QUERY,
+            operation_name=self.INTROSPECTION_OPERATION_NAME,
+            variables={},
+        )
+        schema_content = await await_if_coro(self.backend.execute_query(request))
+        return Schema(schema_content.data["__schema"], self)

@@ -1,54 +1,44 @@
 # skipcq: PY-D0003
-def test_parse_schema_types():
+def test_parse_schema_types(raw_swapi_schema):
     from qlient.core.schema.parser import parse_types
-    from _schema import raw_schema
 
-    schema = raw_schema["data"]["__schema"]
-    types = parse_types(schema)
+    types = parse_types(raw_swapi_schema)
     assert isinstance(types, dict)
 
 
 # skipcq: PY-D0003
-def test_query_type_extraction():
+def test_query_type_extraction(raw_swapi_schema):
     from qlient.core.schema.parser import parse_types, extract_query_type
     from qlient.core.schema.models import Type
-    from _schema import raw_schema
 
-    schema = raw_schema["data"]["__schema"]
-    types = parse_types(schema)
-    query_type = extract_query_type(schema, types)
+    types = parse_types(raw_swapi_schema)
+    query_type = extract_query_type(raw_swapi_schema, types)
     assert isinstance(query_type, Type)
 
 
 # skipcq: PY-D0003
-def test_mutation_type_extraction():
+def test_mutation_type_extraction(raw_swapi_schema):
     from qlient.core.schema.parser import parse_types, extract_mutation_type
-    from _schema import raw_schema
 
-    schema = raw_schema["data"]["__schema"]
-    types = parse_types(schema)
-    mutation_type = extract_mutation_type(schema, types)
+    types = parse_types(raw_swapi_schema)
+    mutation_type = extract_mutation_type(raw_swapi_schema, types)
     assert mutation_type is None
 
 
 # skipcq: PY-D0003
-def test_subscription_type_extraction():
+def test_subscription_type_extraction(raw_swapi_schema):
     from qlient.core.schema.parser import parse_types, extract_subscription_type
-    from _schema import raw_schema
 
-    schema = raw_schema["data"]["__schema"]
-    types = parse_types(schema)
-    subscription_type = extract_subscription_type(schema, types)
+    types = parse_types(raw_swapi_schema)
+    subscription_type = extract_subscription_type(raw_swapi_schema, types)
     assert subscription_type is None
 
 
 # skipcq: PY-D0003
-def test_parse_schema_directives():
+def test_parse_schema_directives(raw_swapi_schema):
     from qlient.core.schema.parser import parse_directives
-    from _schema import raw_schema
 
-    schema = raw_schema["data"]["__schema"]
-    directives = parse_directives(schema)
+    directives = parse_directives(raw_swapi_schema)
     assert isinstance(directives, dict)
 
 
@@ -84,12 +74,10 @@ def test_filled_parse_result():
 
 
 # skipcq: PY-D0003
-def test_parse_schema():
+def test_parse_schema(raw_swapi_schema):
     from qlient.core.schema.parser import parse_schema, ParseResult
-    from _schema import raw_schema
 
-    schema = raw_schema["data"]["__schema"]
-    parse_result: ParseResult = parse_schema(schema)
+    parse_result: ParseResult = parse_schema(raw_swapi_schema)
     assert isinstance(parse_result, ParseResult)
     assert parse_result.query_type is not None
     assert parse_result.mutation_type is None

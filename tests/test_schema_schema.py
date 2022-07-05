@@ -6,16 +6,10 @@ from qlient.core.schema.schema import Schema
 def test_schema(swapi_schema):
 
     assert isinstance(swapi_schema, Schema)
-    assert swapi_schema.schema_provider.schema_cache_key == "Test"
-
     assert isinstance(swapi_schema.query_type, Type)
     assert swapi_schema.query_type.name == "Root"
-
     assert swapi_schema.mutation_type is None
-
     assert swapi_schema.subscription_type is None
-
-    assert swapi_schema.cache is None
 
     assert (
         str(swapi_schema)

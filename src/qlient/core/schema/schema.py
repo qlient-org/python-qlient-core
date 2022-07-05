@@ -14,32 +14,15 @@ SchemaProviderType = typing.Type["SchemaProvider"]
 class Schema:
     """Represents a graphql schema"""
 
-    @classmethod
-    def from_raw(
-        cls,
-        raw_schema: RawSchema,
-        provider: SchemaProviderType,
-    ) -> "Schema":
-        """Class method to load the schema synchronously
-
-        Args:
-            raw_schema: holds the raw schema
-            provider: holds the schema provider
-
-        Returns:
-            A introspected and ready to use schema
-        """
-        parse_result: ParseResult = parse_schema(raw_schema)
-        return cls(raw_schema, parse_result, provider)
-
     def __init__(
         self,
         raw_schema: RawSchema,
-        parse_result,
         provider: SchemaProviderType,
     ):
         self.raw_schema: RawSchema = raw_schema
         self.schema_provider: SchemaProviderType = provider
+
+        parse_result: ParseResult = parse_schema(self.raw_schema)
 
         self.query_type: typing.Optional[Type] = parse_result.query_type
         self.mutation_type: typing.Optional[Type] = parse_result.mutation_type
@@ -47,6 +30,12 @@ class Schema:
         self.types_registry: typing.Dict[str, Type] = parse_result.types
         self.directives_registry: typing.Dict[str, Directive] = parse_result.directives
         logger.debug("Schema successfully introspected")
+
+    def __eq__(self, other: "Schema"):
+        return (
+            self.raw_schema == other.raw_schema
+            and self.schema_provider == other.schema_provider
+        )
 
     def __getattr__(self, key) -> typing.Optional[Type]:
         return self[key]
