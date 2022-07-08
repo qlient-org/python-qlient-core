@@ -108,7 +108,7 @@ class PreparedDirective:
             )
         schema_directive = schema.directives_registry.get(self.name)
         if schema_directive is None:
-            raise ValueError(f"No directive found with name `{self.name}` in schema.")
+            raise ValueError(f"No directive found named `{self.name}` in schema.")
         self.schema_directive = schema_directive
 
     def prepare_name(self, name: Optional[str]):
@@ -125,9 +125,11 @@ class PreparedDirective:
         """Method to prepare the directive inputs (variables)
 
         This iterates over all given inputs and registers them for further usage.
-        To ensure a unique variables key, the reference key is prefixed with the name and id of this directive.
+        To ensure a unique variables key,
+        the reference key is prefixed with the name and id of this directive.
 
-        If there is an input given that is not part of this directive it will raise a ValueError.
+        If there is an input given that is not part of this directive,
+        it will raise a ValueError.
 
         Args:
             variables: holds the inputs for this directive.
@@ -334,7 +336,8 @@ class PreparedField:
         """
         if not self.name:
             raise ValueError(
-                f"Name must be set before calling `{self.prepare_type_checking.__name__}`"
+                f"Name must be set before "
+                f"calling `{self.prepare_type_checking.__name__}`"
             )
         schema_field_type = parent.field_name_to_field.get(self.name)
         if schema_field_type is None:
@@ -372,11 +375,13 @@ class PreparedField:
         they must be registered at operation level.
         In order to do so, they must be referenced.
 
-        So this method iterates over all given variables and creates unique references for them.
+        So this method iterates over all given variables
+        and creates unique references for them.
         It then maps the reference to the value.
 
         Args:
-            variables: holds a dictionary where the name of the variable is mapped to its value
+            variables: holds a dictionary where the name of the variable
+                        is mapped to its value
         """
         if not self.name:
             raise ValueError(
@@ -478,7 +483,8 @@ class Fields:
 
         Args:
             args: holds the given *args
-            fields: optional, holds a dictionary of fields parsed so far, empty dict if None
+            fields: optional, holds a dictionary of fields parsed so far,
+                    empty dict if None
 
         Returns:
             a dictionary mapped with the hash of the field to the Field itself.
@@ -515,7 +521,8 @@ class Fields:
 
         Args:
             kwargs: holds the given **kwargs
-            fields: optional, holds a dictionary of fields parsed so far, empty dict if None
+            fields: optional, holds a dictionary of fields parsed so far,
+                    empty dict if None
 
         Returns:
             a dictionary mapped with the hash of the field to the Field itself.
@@ -620,7 +627,7 @@ class PreparedFields:
 
         Args:
             parent: holds the parent's field schema type
-            schema: holds the schema that should be used for validation and type lookups.
+            schema: holds the schema to use for validation and type lookups.
             fields: holds the list of fields that were selected
         """
         self.prepare_fields(parent, schema, fields)
@@ -632,7 +639,7 @@ class PreparedFields:
 
         Args:
             parent: holds this fields instance parents field schema type.
-            schema: holds the schema that should be used for validation and type lookups.
+            schema: holds the schema to use for validation and type lookups.
             fields: holds a list of fields that should be prepared
         """
         fields = fields if fields is not None else []

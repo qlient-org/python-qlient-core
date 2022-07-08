@@ -31,7 +31,7 @@ class GQLQueryBuilder:
         """Static method to build the input with variables
 
         Args:
-            variables: holds a dictionary with the variable key mapped to the variable value
+            variables: holds a dictionary with the var key mapped to the var value
             initial_str: holds the initial string (prefixed the input)
 
         Returns:
@@ -114,7 +114,8 @@ class GQLQueryBuilder:
 
         Args:
             operation: holds the operation type (query, mutation, subscription)
-            name: optional, holds the name of the operation, required for usage with variables
+            name: optional, holds the name of the operation,
+                required for usage with variables
             variables: optional, holds query variables
 
         Returns:
@@ -148,7 +149,8 @@ class GQLQueryBuilder:
 class TypedGQLQueryBuilder:
     """Class that represents a typed GraphQL Query Builder
 
-    The typed graphql builder takes the operation type, operation field, schema and settings
+    The typed graphql builder takes the operation type,
+    operation field, schema and settings
     as input arguments to ensure type safety in the graphql query.
 
     The operation_field is the action that you are trying to execute.
@@ -212,7 +214,8 @@ class TypedGQLQueryBuilder:
         for key in kwargs:
             if self.settings.validate_variables and key not in self.op_inputs:
                 raise KeyError(
-                    f"Input `{key}` not supported for {self.op_type} operation `{self.op_name}`"
+                    f"Input `{key}` not supported "
+                    f"for {self.op_type} operation `{self.op_name}`"
                 )
             _input: SchemaInput = self.op_inputs[key]
             prefixed_key = f"${key}"
