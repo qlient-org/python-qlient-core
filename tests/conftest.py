@@ -23,8 +23,6 @@ else:
 
 schema_files_dir = tests_dir / "schema_files"
 path_to_swapi_schema = schema_files_dir / "swapi_schema.json"
-path_to_spacex_schema = schema_files_dir / "spacex_schema.json"
-path_to_dex_schema = schema_files_dir / "dex_schema.json"
 
 
 @pytest.fixture(scope="session")
@@ -33,37 +31,11 @@ def raw_swapi_schema():
         return json.load(f)
 
 
-@pytest.fixture(scope="session")
-def raw_spacex_schema():
-    with open(path_to_spacex_schema) as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def raw_dex_schema():
-    with open(path_to_dex_schema) as f:
-        return json.load(f)
-
-
 @pytest.fixture
 def swapi_schema(raw_swapi_schema):
     from qlient.core.schema.schema import Schema
 
     return Schema(raw_swapi_schema, None)
-
-
-@pytest.fixture
-def dex_schema(raw_dex_schema):
-    from qlient.core.schema.schema import Schema
-
-    return Schema(raw_dex_schema, None)
-
-
-@pytest.fixture
-def spacex_schema(raw_spacex_schema):
-    from qlient.core.schema.schema import Schema
-
-    return Schema(raw_spacex_schema, None)
 
 
 @pytest.fixture
