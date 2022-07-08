@@ -145,6 +145,7 @@ class OperationProxy:
 class AsyncOperationProxy(OperationProxy):
     """The async operation proxy"""
 
+    # skipcq: PYL-W0236
     async def execute(self) -> GraphQLResponse:
         """Method to execute the operation and return the graphql response.
 
@@ -344,9 +345,10 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
         response = apply_post(self.plugins, response)
         return response
 
-    # skipcq: PYL-W0236
     @abc.abstractmethod
-    async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
+    async def execute(
+        self, request: GraphQLRequest
+    ) -> GraphQLResponse:  # skipcq: PYL-W0236
         """Abstract base method that sends the query to the backend"""
 
 
