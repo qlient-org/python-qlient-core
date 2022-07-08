@@ -11,6 +11,7 @@ from qlient.core import (
     Backend,
     AsyncBackend,
     GraphQLRequest,
+    GraphQLSubscriptionRequest,
     GraphQLResponse,
     Plugin,
 )
@@ -157,6 +158,17 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
 @pytest.fixture
 def graphql_request() -> GraphQLRequest:
     return GraphQLRequest(
+        query="query testOperation { testOperation { foo bar } }",
+        variables={"limit": 1},
+        operation_name="testOperation",
+    )
+
+
+@pytest.fixture
+def graphql_subscription_request() -> GraphQLSubscriptionRequest:
+    return GraphQLSubscriptionRequest(
+        subscription_id="1",
+        options={"auth": "test"},
         query="query testOperation { testOperation { foo bar } }",
         variables={"limit": 1},
         operation_name="testOperation",

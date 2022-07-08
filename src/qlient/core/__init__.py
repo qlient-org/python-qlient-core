@@ -14,6 +14,7 @@ from qlient.core.models import (
     Directive,
     GraphQLResponse,
     GraphQLRequest,
+    GraphQLSubscriptionRequest,
 )
 from qlient.core.plugins import Plugin  # skipcq: PY-W2000
 from qlient.core.settings import Settings  # skipcq: PY-W2000
