@@ -188,7 +188,9 @@ class AsyncQueryProxy(QueryProxy, AsyncOperationProxy):
     """Represents the async operation proxy for queries"""
 
     def __init__(self, proxy: "AsyncQueryServiceProxy", operation_field: SchemaField):
-        super(QueryProxy, self).__init__("query", operation_field, proxy)
+        super(QueryProxy, self).__init__(
+            "query", operation_field, proxy
+        )  # skipcq: PYL-E1003
 
 
 class MutationProxy(OperationProxy):
@@ -204,7 +206,9 @@ class AsyncMutationProxy(MutationProxy, AsyncOperationProxy):
     def __init__(
         self, proxy: "AsyncMutationServiceProxy", operation_field: SchemaField
     ):
-        super(MutationProxy, self).__init__("mutation", operation_field, proxy)
+        super(MutationProxy, self).__init__(
+            "mutation", operation_field, proxy
+        )  # skipcq: PYL-E1003
 
 
 class SubscriptionProxy(OperationProxy):
@@ -220,7 +224,9 @@ class AsyncSubscriptionProxy(SubscriptionProxy, AsyncOperationProxy):
     def __init__(
         self, proxy: "AsyncSubscriptionServiceProxy", operation_field: SchemaField
     ):
-        super(SubscriptionProxy, self).__init__("subscription", operation_field, proxy)
+        super(SubscriptionProxy, self).__init__(
+            "subscription", operation_field, proxy
+        )  # skipcq: PYL-E1003
 
 
 class ServiceProxy(abc.ABC):
