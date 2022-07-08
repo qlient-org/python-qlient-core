@@ -1,6 +1,6 @@
 import abc
 import itertools
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Any
 
 from qlient.core._internal import await_if_coro
 from qlient.core._types import GraphQLContextType, GraphQLRootType, GraphQLQueryType
@@ -9,6 +9,7 @@ from qlient.core.builder import TypedGQLQueryBuilder, Fields
 from qlient.core.models import (
     GraphQLResponse,
     GraphQLRequest,
+    GraphQLSubscriptionRequest,
 )
 from qlient.core.plugins import Plugin, apply_pre, apply_post
 from qlient.core.schema.models import Field as SchemaField
@@ -19,9 +20,12 @@ from qlient.core.settings import Settings
 class OperationProxy:
     """The operation proxy"""
 
+    _request_factory = GraphQLRequest
+
     operation_type: str
     field: SchemaField
     proxy: "ServiceProxy"
+    _request: GraphQLRequest
 
     def __init__(
         self,
@@ -39,7 +43,7 @@ class OperationProxy:
             self.proxy.schema,
             self.proxy.settings,
         )
-        self._request: GraphQLRequest = GraphQLRequest()
+        self._request = self._request_factory()
 
     def select(self, *args, **kwargs) -> "OperationProxy":
         """Method to select fields
@@ -99,7 +103,7 @@ class OperationProxy:
         self._request.query = self.query
         self._request.operation_name = self.field.name
         response = self.proxy.send(self._request)
-        self._request = GraphQLRequest()  # reset the request
+        self._request = self._request_factory()  # reset the request
         return response
 
     def __str__(self) -> str:
@@ -188,7 +192,9 @@ class AsyncQueryProxy(QueryProxy, AsyncOperationProxy):
     """Represents the async operation proxy for queries"""
 
     def __init__(self, proxy: "AsyncQueryServiceProxy", operation_field: SchemaField):
-        super(QueryProxy, self).__init__("query", operation_field, proxy)
+        super(QueryProxy, self).__init__(
+            "query", operation_field, proxy
+        )  # skipcq: PYL-E1003
 
 
 class MutationProxy(OperationProxy):
@@ -204,14 +210,66 @@ class AsyncMutationProxy(MutationProxy, AsyncOperationProxy):
     def __init__(
         self, proxy: "AsyncMutationServiceProxy", operation_field: SchemaField
     ):
-        super(MutationProxy, self).__init__("mutation", operation_field, proxy)
+        super(MutationProxy, self).__init__(
+            "mutation", operation_field, proxy
+        )  # skipcq: PYL-E1003
 
 
 class SubscriptionProxy(OperationProxy):
     """Represents the operation proxy for subscriptions"""
 
+    _request_factory = GraphQLSubscriptionRequest
+    _request = GraphQLSubscriptionRequest
+
     def __init__(self, proxy: "SubscriptionServiceProxy", operation_field: SchemaField):
         super(SubscriptionProxy, self).__init__("subscription", operation_field, proxy)
+
+    def subscription_id(self, subscription_id: str) -> "SubscriptionProxy":
+        """Method to set the subscription id for the subscription
+
+        Args:
+            subscription_id: holds the subscription id
+
+        Returns:
+            self
+        """
+        self._request.subscription_id = subscription_id
+        return self
+
+    def options(self, **options: Dict[str, Any]) -> "OperationProxy":
+        """Method to set the initial subscription options for this subscription
+
+        Args:
+            **options: holds the subscription options
+
+        Returns:
+            self
+        """
+        self._request.options.update(options)
+        return self
+
+    def __call__(
+        self,
+        _fields: Optional[Fields] = None,
+        _context: GraphQLContextType = None,
+        _root: GraphQLRootType = None,
+        _subscription_id: str = None,
+        _options: Dict[str, Any] = None,
+        **query_variables,
+    ) -> GraphQLResponse:
+        if _fields:
+            self.select(_fields)
+        if query_variables:
+            self.variables(**query_variables)
+        if _context:
+            self.context(_context)
+        if _root:
+            self.root(_root)
+        if _subscription_id:
+            self.subscription_id(_subscription_id)
+        if _options:
+            self.options(**_options)
+        return self.execute()
 
 
 class AsyncSubscriptionProxy(SubscriptionProxy, AsyncOperationProxy):
@@ -220,7 +278,9 @@ class AsyncSubscriptionProxy(SubscriptionProxy, AsyncOperationProxy):
     def __init__(
         self, proxy: "AsyncSubscriptionServiceProxy", operation_field: SchemaField
     ):
-        super(SubscriptionProxy, self).__init__("subscription", operation_field, proxy)
+        super(SubscriptionProxy, self).__init__(
+            "subscription", operation_field, proxy
+        )  # skipcq: PYL-E1003
 
 
 class ServiceProxy(abc.ABC):
@@ -419,7 +479,7 @@ class SubscriptionServiceProxy(ServiceProxy):
 
     _operation_proxy_type = SubscriptionProxy
 
-    def execute(self, request: GraphQLRequest) -> GraphQLResponse:
+    def execute(self, request: GraphQLSubscriptionRequest) -> GraphQLResponse:
         """Send a query to the graphql server"""
         return self.backend.execute_subscription(request)
 
@@ -444,6 +504,6 @@ class AsyncSubscriptionServiceProxy(SubscriptionServiceProxy, AsyncServiceProxy)
     _operation_proxy_type = AsyncSubscriptionProxy
 
     # skipcq: PYL-W0236
-    async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
+    async def execute(self, request: GraphQLSubscriptionRequest) -> GraphQLResponse:
         """Send a subscription asynchronously to the graphql server"""
         return await await_if_coro(self.backend.execute_subscription(request))

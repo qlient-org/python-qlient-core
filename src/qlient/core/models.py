@@ -689,7 +689,7 @@ class PreparedFields:
 
 
 class GraphQLRequest:
-    """Represents the graph ql request"""
+    """Represents the graphql request"""
 
     def __init__(
         self,
@@ -708,8 +708,24 @@ class GraphQLRequest:
         self.root: GraphQLRootType = root
 
 
+class GraphQLSubscriptionRequest(GraphQLRequest):
+    """Represents a graphql subscription request"""
+
+    subscription_id: str
+    options: Dict[str, Any]
+
+    def __init__(
+        self, subscription_id: str = None, options: Dict[str, Any] = None, **kwargs
+    ):
+        super(GraphQLSubscriptionRequest, self).__init__(**kwargs)
+        if options is None:
+            options = {}
+        self.subscription_id = subscription_id
+        self.options = options
+
+
 class GraphQLResponse:
-    """Represents the graph ql response type"""
+    """Represents the graphql response type"""
 
     def __init__(
         self,
