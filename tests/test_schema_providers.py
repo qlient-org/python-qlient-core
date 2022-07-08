@@ -31,7 +31,7 @@ def bytes_io_schema(raw_swapi_schema):
 @pytest.fixture
 def string_io_schema(raw_swapi_schema):
     my_file = io.StringIO()
-    my_file.write(json.dumps(raw_swapi_schema))
+    json.dump(raw_swapi_schema, my_file)
     my_file.seek(0)
     yield my_file
     my_file.close()
