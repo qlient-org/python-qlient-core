@@ -15,7 +15,10 @@ class SchemaException(QlientException):
 
 
 class SchemaParseException(SchemaException):
-    """This exception gets thrown when the parser was unable to parse the graphql schema"""
+    """Indicates an exception in the schema parsing process
+
+    This exception gets thrown when the parser was unable to parse the graphql schema
+    """
 
 
 class NoTypesFound(SchemaParseException):

@@ -63,7 +63,8 @@ class FileSchemaProvider(SchemaProvider):
 class BackendSchemaProvider(SchemaProvider):
     """Schema provider to read the schema using the backend.
 
-    This provider uses an introspection query to load the schema directly from the backend.
+    This provider uses an introspection query
+    to load the schema directly from the backend.
 
     NOTE! This only works when the graphql backend has allowed introspection.
     """
@@ -184,7 +185,8 @@ class BackendSchemaProvider(SchemaProvider):
 class AsyncBackendSchemaProvider(BackendSchemaProvider):
     """Schema provider to read the schema asynchronously using the backend.
 
-    This provider uses an introspection query to load the schema directly from the backend.
+    This provider uses an introspection query
+    to load the schema directly from the backend.
 
     NOTE! This only works when the graphql backend has allowed introspection.
     """

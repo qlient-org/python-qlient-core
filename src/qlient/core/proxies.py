@@ -301,7 +301,7 @@ class ServiceProxy(abc.ABC):
 
     @property
     def supported_bindings(self) -> List[str]:
-        """Property to list the supported bindings aka the keys of the operations dict"""
+        """Property to list the supported bindings"""
         return list(self.operations.keys())
 
     @abc.abstractmethod

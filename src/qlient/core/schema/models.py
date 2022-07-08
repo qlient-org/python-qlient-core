@@ -81,7 +81,13 @@ class TypeRef:
     def __repr__(self) -> str:
         """Return a more detailed string representation of the type ref instance"""
         class_name = self.__class__.__name__
-        return f"<{class_name}(kind=`{self.kind.name}`, name=`{self.name}`, ofType={self.of_type_ref})>"
+        return (
+            f"<{class_name}("
+            f"kind=`{self.kind.name}`, "
+            f"name=`{self.name}`, "
+            f"ofType={self.of_type_ref}"
+            ")>"
+        )
 
     def __gql__(self) -> str:
         representation = (
@@ -120,7 +126,8 @@ class TypeRef:
     def leaf_type_name(self) -> Optional[str]:
         """Property to return the name of the very last (leaf) `of_type`
 
-        As long as the `of_type` property is not None, it will call the `leaf_type_name` property of the `of_type`.
+        As long as the `of_type` property is not None,
+        it will call the `leaf_type_name` property of the `of_type`.
 
         Returns:
             The name of the very last (leaf) `of_type` Type Ref.
@@ -354,7 +361,8 @@ class Field:
     def output_type_name(self) -> Optional[str]:
         """Property to return the output type name (which is the leaf type name)
 
-        The output type name can only be looked up if the `self.type` property is not None
+        The output type name can only be looked up
+        if the `self.type` property is not None
 
         Returns:
             Either None (if `self.type` is None) or the leaf type name
@@ -474,11 +482,13 @@ class Type:
     def infer_types(self, types_dict: Dict[str, "Type"]):
         """Method to infer the types for all graphql schema types.
 
-        This method iterates over each and all fields, input fields, interfaces and possible types to infer
+        This method iterates over each and all fields,
+        input fields, interfaces and possible types to infer
         the `types` of the instance.
 
         Args:
-            types_dict: Holds a dictionary with the name of the typed mapped to the actual graphql schema type.
+            types_dict: Holds a dictionary with the name of the typed
+                        mapped to the actual graphql schema type.
         """
         if self.fields is not None:
             for type_field in self.fields:

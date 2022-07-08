@@ -101,7 +101,8 @@ def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
 
     A directive is an identifier preceded by a @ character,
     optionally followed by a list of named arguments,
-    which can appear after almost any form of syntax in the GraphQL query or schema languages.
+    which can appear after almost any form of syntax
+    in the GraphQL query or schema languages.
 
     Args:
         schema: holds the schema to parse
