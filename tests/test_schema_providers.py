@@ -74,9 +74,11 @@ def test_backend_schema_provider(raw_swapi_schema):
             assert request.root is None
             return GraphQLResponse(request, {"data": {"__schema": raw_swapi_schema}})
 
+        # skipcq: PTC-W0049
         def execute_mutation(self, *args, **kwargs):
             pass
 
+        # skipcq: PTC-W0049
         def execute_subscription(self, *args, **kwargs):
             pass
 
