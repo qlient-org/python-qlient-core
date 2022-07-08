@@ -12,6 +12,7 @@ from qlient.core import (
     AsyncBackend,
     GraphQLRequest,
     GraphQLResponse,
+    Plugin,
 )
 
 project_dir = pathlib.Path(pathlib.Path().resolve())
@@ -151,3 +152,43 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
             return GraphQLResponse(request, generator)
 
     return AsyncStrawberryBackend()
+
+
+@pytest.fixture
+def graphql_request() -> GraphQLRequest:
+    return GraphQLRequest(
+        query="query testOperation { testOperation { foo bar } }",
+        variables={"limit": 1},
+        operation_name="testOperation",
+    )
+
+
+@pytest.fixture
+def graphql_response(graphql_request) -> GraphQLResponse:
+    return GraphQLResponse(
+        graphql_request,
+        {
+            "data": {"testOperation": {"foo": "", "bar": ""}},
+            "errors": [],
+            "extensions": [],
+        },
+    )
+
+
+class _MyPlugin(Plugin):
+    def __init__(self):
+        self.pre_called = False
+        self.post_called = False
+
+    def pre(self, request: GraphQLRequest) -> GraphQLRequest:
+        self.pre_called = True
+        return request
+
+    def post(self, response: GraphQLResponse) -> GraphQLResponse:
+        self.post_called = True
+        return response
+
+
+@pytest.fixture
+def my_plugin() -> _MyPlugin:
+    return _MyPlugin()
