@@ -31,7 +31,7 @@ def bytes_io_schema(raw_swapi_schema):
 @pytest.fixture
 def string_io_schema(raw_swapi_schema):
     my_file = io.StringIO()
-    my_file.write(json.dumps(raw_swapi_schema))
+    json.dump(raw_swapi_schema, my_file)
     my_file.seek(0)
     yield my_file
     my_file.close()
@@ -61,6 +61,8 @@ def test_backend_schema_provider(raw_swapi_schema):
     from qlient.core.backends import Backend
 
     class MyBackend(Backend):
+
+        # skipcq: PYL-R0201
         def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
             assert (
                 request.operation_name
@@ -72,9 +74,11 @@ def test_backend_schema_provider(raw_swapi_schema):
             assert request.root is None
             return GraphQLResponse(request, {"data": {"__schema": raw_swapi_schema}})
 
+        # skipcq: PTC-W0049
         def execute_mutation(self, *args, **kwargs):
             pass
 
+        # skipcq: PTC-W0049
         def execute_subscription(self, *args, **kwargs):
             pass
 

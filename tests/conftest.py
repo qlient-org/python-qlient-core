@@ -12,6 +12,7 @@ from qlient.core import (
     AsyncBackend,
     GraphQLRequest,
     GraphQLResponse,
+    Plugin,
 )
 
 project_dir = pathlib.Path(pathlib.Path().resolve())
@@ -23,8 +24,6 @@ else:
 
 schema_files_dir = tests_dir / "schema_files"
 path_to_swapi_schema = schema_files_dir / "swapi_schema.json"
-path_to_spacex_schema = schema_files_dir / "spacex_schema.json"
-path_to_dex_schema = schema_files_dir / "dex_schema.json"
 
 
 @pytest.fixture(scope="session")
@@ -33,37 +32,11 @@ def raw_swapi_schema():
         return json.load(f)
 
 
-@pytest.fixture(scope="session")
-def raw_spacex_schema():
-    with open(path_to_spacex_schema) as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def raw_dex_schema():
-    with open(path_to_dex_schema) as f:
-        return json.load(f)
-
-
 @pytest.fixture
 def swapi_schema(raw_swapi_schema):
     from qlient.core.schema.schema import Schema
 
     return Schema(raw_swapi_schema, None)
-
-
-@pytest.fixture
-def dex_schema(raw_dex_schema):
-    from qlient.core.schema.schema import Schema
-
-    return Schema(raw_dex_schema, None)
-
-
-@pytest.fixture
-def spacex_schema(raw_spacex_schema):
-    from qlient.core.schema.schema import Schema
-
-    return Schema(raw_spacex_schema, None)
 
 
 @pytest.fixture
@@ -109,6 +82,8 @@ def strawberry_schema() -> strawberry.Schema:
 @pytest.fixture
 def strawberry_backend(strawberry_schema) -> Backend:
     class StrawberryBackend(Backend):
+
+        # skipcq: PYL-R0201
         def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
             result = strawberry_schema.execute_sync(
                 query=request.query,
@@ -129,6 +104,7 @@ def strawberry_backend(strawberry_schema) -> Backend:
         def execute_mutation(self, request: GraphQLRequest) -> GraphQLResponse:
             return self.execute_query(request)
 
+        # skipcq: PYL-R0201
         def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
             raise NotImplementedError
 
@@ -138,6 +114,8 @@ def strawberry_backend(strawberry_schema) -> Backend:
 @pytest.fixture
 def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
     class AsyncStrawberryBackend(AsyncBackend):
+
+        # skipcq: PYL-R0201
         async def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
             result = await strawberry_schema.execute(
                 query=request.query,
@@ -158,6 +136,7 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
         async def execute_mutation(self, request: GraphQLRequest) -> GraphQLResponse:
             return await self.execute_query(request)
 
+        # skipcq: PYL-R0201
         async def execute_subscription(
             self, request: GraphQLRequest
         ) -> GraphQLResponse:
@@ -173,3 +152,43 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
             return GraphQLResponse(request, generator)
 
     return AsyncStrawberryBackend()
+
+
+@pytest.fixture
+def graphql_request() -> GraphQLRequest:
+    return GraphQLRequest(
+        query="query testOperation { testOperation { foo bar } }",
+        variables={"limit": 1},
+        operation_name="testOperation",
+    )
+
+
+@pytest.fixture
+def graphql_response(graphql_request) -> GraphQLResponse:
+    return GraphQLResponse(
+        graphql_request,
+        {
+            "data": {"testOperation": {"foo": "", "bar": ""}},
+            "errors": [],
+            "extensions": [],
+        },
+    )
+
+
+class _MyPlugin(Plugin):
+    def __init__(self):
+        self.pre_called = False
+        self.post_called = False
+
+    def pre(self, request: GraphQLRequest) -> GraphQLRequest:
+        self.pre_called = True
+        return request
+
+    def post(self, response: GraphQLResponse) -> GraphQLResponse:
+        self.post_called = True
+        return response
+
+
+@pytest.fixture
+def my_plugin() -> _MyPlugin:
+    return _MyPlugin()

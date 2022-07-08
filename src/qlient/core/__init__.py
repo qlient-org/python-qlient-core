@@ -1,6 +1,13 @@
-from qlient.core.backends import Backend, AsyncBackend
-from qlient.core.clients import Client, AsyncClient
-from qlient.core.exceptions import QlientException, OutOfAsyncContext
+from qlient.core.backends import Backend, AsyncBackend  # skipcq: PY-W2000
+from qlient.core.clients import Client, AsyncClient  # skipcq: PY-W2000
+
+# skipcq: PY-W2000
+from qlient.core.exceptions import (
+    QlientException,
+    OutOfAsyncContext,
+)
+
+# skipcq: PY-W2000
 from qlient.core.models import (
     Fields,
     Field,
@@ -8,5 +15,5 @@ from qlient.core.models import (
     GraphQLResponse,
     GraphQLRequest,
 )
-from qlient.core.plugins import Plugin
-from qlient.core.settings import Settings
+from qlient.core.plugins import Plugin  # skipcq: PY-W2000
+from qlient.core.settings import Settings  # skipcq: PY-W2000

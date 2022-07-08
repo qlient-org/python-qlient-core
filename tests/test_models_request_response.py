@@ -1,29 +1,3 @@
-import pytest
-
-from qlient.core.models import GraphQLRequest, GraphQLResponse
-
-
-@pytest.fixture
-def graphql_request() -> GraphQLRequest:
-    return GraphQLRequest(
-        query="query testOperation { testOperation { foo bar } }",
-        variables={"limit": 1},
-        operation_name="testOperation",
-    )
-
-
-@pytest.fixture
-def graphql_response(graphql_request) -> GraphQLResponse:
-    return GraphQLResponse(
-        graphql_request,
-        {
-            "data": {"testOperation": {"foo": "", "bar": ""}},
-            "errors": [],
-            "extensions": [],
-        },
-    )
-
-
 def test_graphql_request(graphql_request):
     assert graphql_request.query == "query testOperation { testOperation { foo bar } }"
     assert graphql_request.variables == {"limit": 1}
