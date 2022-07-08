@@ -109,6 +109,8 @@ def strawberry_schema() -> strawberry.Schema:
 @pytest.fixture
 def strawberry_backend(strawberry_schema) -> Backend:
     class StrawberryBackend(Backend):
+
+        # skipcq: PYL-R0201
         def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
             result = strawberry_schema.execute_sync(
                 query=request.query,
@@ -129,6 +131,7 @@ def strawberry_backend(strawberry_schema) -> Backend:
         def execute_mutation(self, request: GraphQLRequest) -> GraphQLResponse:
             return self.execute_query(request)
 
+        # skipcq: PYL-R0201
         def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
             raise NotImplementedError
 
@@ -138,6 +141,8 @@ def strawberry_backend(strawberry_schema) -> Backend:
 @pytest.fixture
 def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
     class AsyncStrawberryBackend(AsyncBackend):
+
+        # skipcq: PYL-R0201
         async def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
             result = await strawberry_schema.execute(
                 query=request.query,
@@ -158,6 +163,7 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
         async def execute_mutation(self, request: GraphQLRequest) -> GraphQLResponse:
             return await self.execute_query(request)
 
+        # skipcq: PYL-R0201
         async def execute_subscription(
             self, request: GraphQLRequest
         ) -> GraphQLResponse:

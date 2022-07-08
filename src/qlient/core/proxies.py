@@ -157,6 +157,7 @@ class AsyncOperationProxy(OperationProxy):
         self._request = GraphQLRequest()  # reset the request
         return response
 
+    # skipcq: PYL-W0236
     async def __call__(
         self,
         _fields: Optional[Fields] = None,
@@ -328,6 +329,7 @@ class ServiceProxy(abc.ABC):
 class AsyncServiceProxy(ServiceProxy, abc.ABC):
     """Base class for all async service proxies"""
 
+    # skipcq: PYL-W0236
     async def send(self, request: GraphQLRequest) -> GraphQLResponse:
         """The method that sends the request through plugins onto the backend asynchronously.
 
@@ -342,6 +344,7 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
         response = apply_post(self.plugins, response)
         return response
 
+    # skipcq: PYL-W0236
     @abc.abstractmethod
     async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Abstract base method that sends the query to the backend"""
@@ -372,6 +375,7 @@ class AsyncQueryServiceProxy(QueryServiceProxy, AsyncServiceProxy):
 
     _operation_proxy_type = AsyncQueryProxy
 
+    # skipcq: PYL-W0236
     async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Send a query asynchronously to the graphql server"""
         return await await_if_coro(self.backend.execute_query(request))
@@ -402,6 +406,7 @@ class AsyncMutationServiceProxy(MutationServiceProxy, AsyncServiceProxy):
 
     _operation_proxy_type = AsyncMutationProxy
 
+    # skipcq: PYL-W0236
     async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Send a mutation asynchronously to the graphql server"""
         return await await_if_coro(self.backend.execute_mutation(request))
@@ -436,6 +441,7 @@ class AsyncSubscriptionServiceProxy(SubscriptionServiceProxy, AsyncServiceProxy)
 
     _operation_proxy_type = AsyncSubscriptionProxy
 
+    # skipcq: PYL-W0236
     async def execute(self, request: GraphQLRequest) -> GraphQLResponse:
         """Send a subscription asynchronously to the graphql server"""
         return await await_if_coro(self.backend.execute_subscription(request))

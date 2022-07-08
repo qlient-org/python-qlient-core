@@ -189,7 +189,7 @@ class AsyncBackendSchemaProvider(BackendSchemaProvider):
     NOTE! This only works when the graphql backend has allowed introspection.
     """
 
-    async def load_schema(self) -> Schema:
+    async def load_schema(self) -> Schema:  # skipcq: PYL-W0236
         """Send the introspection query to the backend and return the given schema
 
         Returns:

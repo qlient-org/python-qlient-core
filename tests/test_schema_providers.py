@@ -61,6 +61,8 @@ def test_backend_schema_provider(raw_swapi_schema):
     from qlient.core.backends import Backend
 
     class MyBackend(Backend):
+
+        # skipcq: PYL-R0201
         def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
             assert (
                 request.operation_name
