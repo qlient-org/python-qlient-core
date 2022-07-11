@@ -1,0 +1,39 @@
+site_name: qlient-core
+site_url: https://qlient-org.github.io/python-qlient-core/
+site_description: The core for all qlient clients
+
+strict: false
+
+repo_name: qlient-org/python-qlient-core
+repo_url: https://github.com/qlient-org/python-qlient-core
+
+theme:
+  name: 'material'
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      primary: black
+      secondary: cyan
+      accent: cyan
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: black
+      secondary: cyan
+      accent: cyan
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.extra
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings
