@@ -17,4 +17,4 @@ class Settings:
     def __repr__(self) -> str:
         """Return a detailed string representation of the settings"""
         class_name = self.__class__.__name__
-        return f"{class_name}()"
+        return f"<{class_name}(validate_variables={self.validate_variables})>"

@@ -23,7 +23,6 @@ class Backend(abc.ABC):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     def execute_mutation(self, request: GraphQLRequest) -> GraphQLResponse:
         """Abstract method to execute a mutation on this backend.
 
@@ -35,7 +34,6 @@ class Backend(abc.ABC):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     def execute_subscription(
         self, request: GraphQLSubscriptionRequest
     ) -> GraphQLResponse:
@@ -67,7 +65,6 @@ class AsyncBackend(Backend, abc.ABC):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     async def execute_mutation(
         self, request: GraphQLRequest
     ) -> GraphQLResponse:  # skipcq: PYL-W0236
@@ -81,7 +78,6 @@ class AsyncBackend(Backend, abc.ABC):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     async def execute_subscription(
         self, request: GraphQLSubscriptionRequest
     ) -> GraphQLResponse:  # skipcq: PYL-W0236
