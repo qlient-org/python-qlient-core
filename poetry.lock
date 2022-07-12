@@ -486,7 +486,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.115.0"
+version = "0.117.1"
 description = "A library for creating GraphQL APIs"
 category = "dev"
 optional = false
@@ -563,7 +563,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "2331dd715f6d1e4aab2e846ccb42e34b3ce16953ad53ce8b60868869a3d019b1"
+content-hash = "3e47b29bec554344c7bb76f3c41ae4d78f3777c1ecac64211c680b6e4a0fbda5"
 
 [metadata.files]
 atomicwrites = []
@@ -846,10 +846,7 @@ six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
-strawberry-graphql = [
-    {file = "strawberry-graphql-0.115.0.tar.gz", hash = "sha256:cd58d04908ef68b90f6cc0ecf5786ed48165aed7ba55f9ba9db3c032f02ba163"},
-    {file = "strawberry_graphql-0.115.0-py3-none-any.whl", hash = "sha256:9b208d7aafdfb0f8186185dcd7de199d37aedbfc1373fa52c6597601727e8b8c"},
-]
+strawberry-graphql = []
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},

@@ -7,8 +7,10 @@ class Settings:
     def __init__(
         self,
         validate_variables: bool = True,
+        use_schema_description: bool = True,
     ):
         self.validate_variables: bool = validate_variables
+        self.use_schema_description: bool = use_schema_description
 
     def __str__(self) -> str:
         """Return a simple string representation of the settings"""
@@ -17,4 +19,9 @@ class Settings:
     def __repr__(self) -> str:
         """Return a detailed string representation of the settings"""
         class_name = self.__class__.__name__
-        return f"<{class_name}(validate_variables={self.validate_variables})>"
+        return (
+            f"<{class_name}("
+            f"validate_variables={self.validate_variables}, "
+            f"use_schema_description={self.use_schema_description}"
+            f")>"
+        )

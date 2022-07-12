@@ -45,6 +45,9 @@ class OperationProxy:
         )
         self._request = self._request_factory()
 
+        if proxy.settings.use_schema_description and field.description:
+            self.__doc__ = field.description
+
     def select(self, *args, **kwargs) -> "OperationProxy":
         """Method to select fields
 
