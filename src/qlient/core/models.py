@@ -166,6 +166,9 @@ class PreparedDirective:
         self.var_ref_to_var_value = ref_to_val
         self.var_ref_to_var_input = ref_to_type
 
+    def __str__(self) -> str:
+        return self.__gql__()
+
     def __gql__(self) -> str:
         """Method to create a graphql representation of this directive
 
