@@ -1,4 +1,4 @@
-name: Python package
+name: Coral Core - Pytest
 
 on: [push]
 
