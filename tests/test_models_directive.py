@@ -1,15 +1,32 @@
+import pytest
+
 from qlient.core.models import Directive, PreparedDirective
+
 
 # skipcq: PY-D0003
 def test_directive():
-
     actual = Directive("my_directive")
     assert actual.name == "my_directive"
 
 
 # skipcq: PY-D0003
-def test_directive_with_variables():
+def test_directive_hash():
+    assert isinstance(hash(Directive("foo")), int)
 
+
+# skipcq: PY-D0003
+def test_directive_comparison():
+    assert Directive("foo") == Directive("foo")
+
+
+# skipcq: PY-D0003
+def test_directive_comparison_with_different_type():
+    with pytest.raises(TypeError):
+        assert Directive("foo") == 0
+
+
+# skipcq: PY-D0003
+def test_directive_with_variables():
     my_directive = Directive("my_directive", foo="5")
     assert "foo" in my_directive.variables
     assert my_directive.variables["foo"] == "5"
@@ -18,7 +35,6 @@ def test_directive_with_variables():
 
 # skipcq: PY-D0003
 def test_prepared_directive(swapi_schema):
-
     my_directive = Directive("include")
     prepared_directive = my_directive.prepare(swapi_schema)
     assert isinstance(prepared_directive, PreparedDirective)
@@ -26,7 +42,6 @@ def test_prepared_directive(swapi_schema):
 
 # skipcq: PY-D0003
 def test_prepared_directive_with_variables(swapi_schema):
-
     my_directive = Directive("include", **{"if": True})
     prepared_directive = my_directive.prepare(swapi_schema)
     assert isinstance(prepared_directive, PreparedDirective)
@@ -36,7 +51,6 @@ def test_prepared_directive_with_variables(swapi_schema):
 
 # skipcq: PY-D0003
 def test_prepared_directive_gql(swapi_schema):
-
     my_directive = Directive("include")
     prepared_directive = my_directive.prepare(swapi_schema)
     assert prepared_directive.__gql__() == "@include"
@@ -44,7 +58,6 @@ def test_prepared_directive_gql(swapi_schema):
 
 # skipcq: PY-D0003
 def test_prepared_directive_with_variables_gql(swapi_schema):
-
     my_directive = Directive("include", **{"if": True})
     prepared_directive = my_directive.prepare(swapi_schema)
     assert (

@@ -1,6 +1,24 @@
 import pytest
 
-from qlient.core import GraphQLResponse
+from qlient.core import GraphQLResponse, AsyncBackend
+
+
+@pytest.mark.asyncio
+async def test_async_backend_execute_query_raise_not_implemented():
+    with pytest.raises(NotImplementedError):
+        await AsyncBackend.execute_query(..., ...)
+
+
+@pytest.mark.asyncio
+async def test_async_backend_execute_mutation_raise_not_implemented():
+    with pytest.raises(NotImplementedError):
+        await AsyncBackend.execute_mutation(..., ...)
+
+
+@pytest.mark.asyncio
+async def test_async_backend_execute_subscription_raise_not_implemented():
+    with pytest.raises(NotImplementedError):
+        await AsyncBackend.execute_subscription(..., ...)
 
 
 @pytest.mark.asyncio

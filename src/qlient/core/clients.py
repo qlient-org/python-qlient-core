@@ -105,14 +105,14 @@ class Client:
     def __str__(self) -> str:
         """Return a simple string representation of the client"""
         class_name = self.__class__.__name__
-        return f"{class_name}(backend=`{self.backend}`)"
+        return f"{class_name}(backend={self.backend})"
 
     def __repr__(self) -> str:
         """Return a detailed string representation of the client"""
         class_name = self.__class__.__name__
         props = ", ".join(
             [
-                f"endpoint=`{self.backend}`",
+                f"endpoint={self.backend}",
                 f"settings={self.settings}",
             ]
         )

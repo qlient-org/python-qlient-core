@@ -142,9 +142,6 @@ class GQLQueryBuilder:
         final_query = " ".join(query_parts)
         return self.remove_duplicate_spaces(final_query)
 
-    def __gql__(self) -> str:
-        return self.build()
-
 
 class TypedGQLQueryBuilder:
     """Class that represents a typed GraphQL Query Builder

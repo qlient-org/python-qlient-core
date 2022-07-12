@@ -109,6 +109,9 @@ def strawberry_backend(strawberry_schema) -> Backend:
         def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
             raise NotImplementedError
 
+        def __str__(self) -> str:
+            return self.__class__.__name__
+
     return StrawberryBackend()
 
 
@@ -151,6 +154,9 @@ def async_strawberry_backend(strawberry_schema) -> AsyncBackend:
             if isinstance(generator, ExecutionResult):
                 raise ValueError(f"Failed to initiate subscription: {generator}")
             return GraphQLResponse(request, generator)
+
+        def __str__(self) -> str:
+            return self.__class__.__name__
 
     return AsyncStrawberryBackend()
 
