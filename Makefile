@@ -30,7 +30,7 @@ clean:
 
 .PHONY: test
 test: $(INSTALL_STAMP)
-	$(POETRY) run pytest --cov=src --cov-report=xml
+	$(POETRY) run pytest --cov=src
 
 
 .PHONY: report
