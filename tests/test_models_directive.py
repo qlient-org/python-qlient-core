@@ -11,7 +11,7 @@ def test_directive():
 
 # skipcq: PY-D0003
 def test_directive_hash():
-    assert hash(Directive("foo")) > 0
+    assert isinstance(hash(Directive("foo")), int)
 
 
 # skipcq: PY-D0003
