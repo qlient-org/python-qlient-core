@@ -1,4 +1,26 @@
-from qlient.core import GraphQLResponse
+import pytest
+
+from qlient.core import GraphQLResponse, Backend
+
+
+def test_backend_no_impl():
+    with pytest.raises(TypeError):
+        Backend()
+
+
+def test_backend_execute_query_raise_not_implemented():
+    with pytest.raises(NotImplementedError):
+        Backend.execute_query(..., ...)
+
+
+def test_backend_execute_mutation_raise_not_implemented():
+    with pytest.raises(NotImplementedError):
+        Backend.execute_mutation(..., ...)
+
+
+def test_backend_execute_subscription_raise_not_implemented():
+    with pytest.raises(NotImplementedError):
+        Backend.execute_subscription(..., ...)
 
 
 def test_backend_execute_query(strawberry_backend, monkeypatch):
