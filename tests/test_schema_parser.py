@@ -1,9 +1,23 @@
 # skipcq: PY-D0003
+import pytest
+
+from qlient.core.exceptions import NoTypesFound
+
+
+# skipcq: PY-D0003
 def test_parse_schema_types(raw_swapi_schema):
     from qlient.core.schema.parser import parse_types
 
     types = parse_types(raw_swapi_schema)
     assert isinstance(types, dict)
+
+
+# skipcq: PY-D0003
+def test_parse_schema_types_no_types():
+    from qlient.core.schema.parser import parse_types
+
+    with pytest.raises(NoTypesFound):
+        parse_types({})
 
 
 # skipcq: PY-D0003

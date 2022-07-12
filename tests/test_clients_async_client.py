@@ -5,6 +5,12 @@ from qlient.core import (
     GraphQLResponse,
     OutOfAsyncContext,
     GraphQLSubscriptionRequest,
+    Settings,
+)
+from qlient.core.proxies import (
+    AsyncQueryServiceProxy,
+    AsyncMutationServiceProxy,
+    AsyncSubscriptionServiceProxy,
 )
 
 
@@ -12,6 +18,17 @@ from qlient.core import (
 async def test_async_client(async_strawberry_backend):
     async with AsyncClient(async_strawberry_backend) as client:
         assert client.schema is not None
+        assert isinstance(client.settings, Settings)
+        assert client.backend == async_strawberry_backend
+        assert client.schema is not None
+
+        assert client.plugins == []
+
+        assert isinstance(client.query, AsyncQueryServiceProxy)
+        assert isinstance(client.mutation, AsyncMutationServiceProxy)
+        assert isinstance(client.subscription, AsyncSubscriptionServiceProxy)
+
+        assert str(client) == "AsyncClient(backend=AsyncStrawberryBackend)"
 
 
 def test_async_client_out_of_context(async_strawberry_backend):
