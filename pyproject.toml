@@ -30,10 +30,9 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.7"
 importlib-metadata = "^4.11.4"
-platformdirs = "^2.5.2"
 
 [tool.poetry.dev-dependencies]
-coverage = "^6.4.1"
+coverage = "^6.4.2"
 pytest = "^7.1.2"
 pytest-asyncio = "^0.18.3"
 pytest-cov = "^3.0.0"
