@@ -3,7 +3,7 @@ name: Coral Core - Pytest
 on: [push]
 
 jobs:
-  build:
+  test:
 
     strategy:
       fail-fast: false
