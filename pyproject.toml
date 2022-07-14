@@ -5,6 +5,7 @@ description = "The core for a blazingly fast and modern graphql client designed 
 authors = ["Daniel Seifert <info@danielseifert.ch>"]
 maintainers = ["Daniel Seifert <info@danielseifert.ch>"]
 readme = "README.md"
+license = "MIT"
 homepage = "https://qlient-org.github.io/python-qlient/"
 repository = "https://github.com/qlient-org/python-qlient"
 documentation = "https://qlient-org.github.io/python-qlient/"
