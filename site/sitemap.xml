@@ -6,7 +6,22 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://qlient-org.github.io/python-qlient-core/api/</loc>
+         <lastmod>2022-07-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://qlient-org.github.io/python-qlient-core/installation/</loc>
+         <lastmod>2022-07-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://qlient-org.github.io/python-qlient-core/introduction/</loc>
+         <lastmod>2022-07-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://qlient-org.github.io/python-qlient-core/usage/backend/</loc>
          <lastmod>2022-07-14</lastmod>
          <changefreq>daily</changefreq>
     </url>

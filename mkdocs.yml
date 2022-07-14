@@ -4,6 +4,15 @@ site_description: The core for all qlient clients
 
 strict: false
 
+nav:
+  - Overview: index.md
+  - Installation: install.md
+  - Introduction: introduction.md
+  - Usage:
+      - Backends: usage/backend.md
+      - Fields and Directives: usage/fields.md
+      - Plugins: usage/plugins.md
+
 repo_name: qlient-org/python-qlient-core
 repo_url: https://github.com/qlient-org/python-qlient-core
 
@@ -37,4 +46,3 @@ markdown_extensions:
 plugins:
   - include-markdown
   - search
-  - mkdocstrings
