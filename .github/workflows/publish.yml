@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  build:
+  build_and_publish:
     environment: PyPI
     runs-on: ubuntu-latest
     steps:
