@@ -104,7 +104,7 @@ class PreparedDirective:
         """
         if not self.name:
             raise ValueError(
-                f"Name must be set before calling `{self.prepare_type_checking.__name__}`"
+                f"Name required before calling `{self.prepare_type_checking.__name__}`"
             )
         schema_directive = schema.directives_registry.get(self.name)
         if schema_directive is None:
