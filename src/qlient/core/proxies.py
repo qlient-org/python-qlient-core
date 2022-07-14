@@ -409,9 +409,9 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
         return response
 
     @abc.abstractmethod
-    async def execute(
+    async def execute(  # skipcq: PYL-W0236
         self, request: GraphQLRequest
-    ) -> GraphQLResponse:  # skipcq: PYL-W0236
+    ) -> GraphQLResponse:
         """Abstract base method that sends the query to the backend"""
 
 
