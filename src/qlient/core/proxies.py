@@ -195,9 +195,8 @@ class AsyncQueryProxy(QueryProxy, AsyncOperationProxy):
     """Represents the async operation proxy for queries"""
 
     def __init__(self, proxy: "AsyncQueryServiceProxy", operation_field: SchemaField):
-        super(QueryProxy, self).__init__(
-            "query", operation_field, proxy
-        )  # skipcq: PYL-E1003
+        # skipcq: PYL-E1003
+        super(QueryProxy, self).__init__("query", operation_field, proxy)
 
 
 class MutationProxy(OperationProxy):
@@ -213,9 +212,8 @@ class AsyncMutationProxy(MutationProxy, AsyncOperationProxy):
     def __init__(
         self, proxy: "AsyncMutationServiceProxy", operation_field: SchemaField
     ):
-        super(MutationProxy, self).__init__(
-            "mutation", operation_field, proxy
-        )  # skipcq: PYL-E1003
+        # skipcq: PYL-E1003
+        super(MutationProxy, self).__init__("mutation", operation_field, proxy)
 
 
 class SubscriptionProxy(OperationProxy):
@@ -281,9 +279,8 @@ class AsyncSubscriptionProxy(SubscriptionProxy, AsyncOperationProxy):
     def __init__(
         self, proxy: "AsyncSubscriptionServiceProxy", operation_field: SchemaField
     ):
-        super(SubscriptionProxy, self).__init__(
-            "subscription", operation_field, proxy
-        )  # skipcq: PYL-E1003
+        # skipcq: PYL-E1003
+        super(SubscriptionProxy, self).__init__("subscription", operation_field, proxy)
 
 
 class ServiceProxy(abc.ABC):
@@ -395,7 +392,7 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
 
     # skipcq: PYL-W0236
     async def send(self, request: GraphQLRequest) -> GraphQLResponse:
-        """The method that sends the request through plugins onto the backend asynchronously.
+        """Method to send the request through plugins onto the backend asynchronously.
 
         Args:
             request: holds the request to send
@@ -409,9 +406,9 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
         return response
 
     @abc.abstractmethod
-    async def execute(
+    async def execute(  # skipcq: PYL-W0236
         self, request: GraphQLRequest
-    ) -> GraphQLResponse:  # skipcq: PYL-W0236
+    ) -> GraphQLResponse:
         """Abstract base method that sends the query to the backend"""
 
 

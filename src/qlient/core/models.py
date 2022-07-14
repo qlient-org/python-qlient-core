@@ -104,7 +104,7 @@ class PreparedDirective:
         """
         if not self.name:
             raise ValueError(
-                f"Name must be set before calling `{self.prepare_type_checking.__name__}`"
+                f"Name required before calling `{self.prepare_type_checking.__name__}`"
             )
         schema_directive = schema.directives_registry.get(self.name)
         if schema_directive is None:
@@ -473,7 +473,8 @@ class PreparedField:
 class Fields:
     """Class to create a selection of multiple fields
 
-    Use this class to create a selection of multiple fields or combine multiple instances.
+    Use this class to create a selection of multiple fields
+    or combine multiple instances.
     """
 
     @classmethod

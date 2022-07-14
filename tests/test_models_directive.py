@@ -131,3 +131,27 @@ def test_prepare_input_unknown_variable(swapi_schema):
 
     with pytest.raises(ValueError):
         directive.prepare_input({"iDontExist": None})
+
+
+def test_prepared_directive__hash__(swapi_schema):
+    directive = PreparedDirective()
+    directive.prepare_name("include")
+    assert isinstance(hash(directive), int)
+
+
+def test_prepared_directive__eq__():
+    directive_a = PreparedDirective()
+    directive_a.prepare_name("include")
+
+    directive_b = PreparedDirective()
+    directive_b.prepare_name("include")
+
+    assert directive_a == directive_b
+
+
+def test_prepared_directive__eq__wrong_type():
+    directive_a = PreparedDirective()
+    directive_a.prepare_name("include")
+
+    with pytest.raises(TypeError):
+        directive_a == 1  # noqa

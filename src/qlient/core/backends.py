@@ -52,9 +52,9 @@ class AsyncBackend(Backend, abc.ABC):
     """Abstract base class for all async graphql backends."""
 
     @abc.abstractmethod
-    async def execute_query(
+    async def execute_query(  # skipcq: PYL-W0236
         self, request: GraphQLRequest
-    ) -> GraphQLResponse:  # skipcq: PYL-W0236
+    ) -> GraphQLResponse:
         """Abstract method to execute a query on this backend asynchronously.
 
         Args:
@@ -65,9 +65,9 @@ class AsyncBackend(Backend, abc.ABC):
         """
         raise NotImplementedError
 
-    async def execute_mutation(
+    async def execute_mutation(  # skipcq: PYL-W0236
         self, request: GraphQLRequest
-    ) -> GraphQLResponse:  # skipcq: PYL-W0236
+    ) -> GraphQLResponse:
         """Abstract method to execute a mutation on this backend asynchronously.
 
         Args:
@@ -78,9 +78,9 @@ class AsyncBackend(Backend, abc.ABC):
         """
         raise NotImplementedError
 
-    async def execute_subscription(
+    async def execute_subscription(  # skipcq: PYL-W0236
         self, request: GraphQLSubscriptionRequest
-    ) -> GraphQLResponse:  # skipcq: PYL-W0236
+    ) -> GraphQLResponse:
         """Abstract method to initialize a subscription on this backend asynchronously.
 
         Args:
