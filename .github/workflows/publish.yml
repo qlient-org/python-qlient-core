@@ -21,4 +21,4 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Publish
-        run: poetry publish --build --username "${{PYPI_USERNAME}}" --password "${{PYPI_PASSWORD}}" --no-interaction
+        run: poetry publish --build --username "${{secrets.PYPI_USERNAME}}" --password "${{secrets.PYPI_PASSWORD}}" --no-interaction
