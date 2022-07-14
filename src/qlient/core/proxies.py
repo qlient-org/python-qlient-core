@@ -392,7 +392,7 @@ class AsyncServiceProxy(ServiceProxy, abc.ABC):
 
     # skipcq: PYL-W0236
     async def send(self, request: GraphQLRequest) -> GraphQLResponse:
-        """The method that sends the request through plugins onto the backend asynchronously.
+        """Method to send the request through plugins onto the backend asynchronously.
 
         Args:
             request: holds the request to send

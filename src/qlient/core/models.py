@@ -473,7 +473,8 @@ class PreparedField:
 class Fields:
     """Class to create a selection of multiple fields
 
-    Use this class to create a selection of multiple fields or combine multiple instances.
+    Use this class to create a selection of multiple fields
+    or combine multiple instances.
     """
 
     @classmethod
