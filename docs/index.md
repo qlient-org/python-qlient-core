@@ -1,6 +1,12 @@
 # Welcome to Qlient Core
 
-Core for building (async) qlient ``Client`` implementations.
+[![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient-core.svg/?label=active+issues&token=B71TvEVbDX-5GynnxfPlumBi)](https://deepsource.io/gh/qlient-org/python-qlient-core/?ref=repository-badge)
+[![DeepSource](https://deepsource.io/gh/qlient-org/python-qlient-core.svg/?label=resolved+issues&token=B71TvEVbDX-5GynnxfPlumBi)](https://deepsource.io/gh/qlient-org/python-qlient-core/?ref=repository-badge)
+[![pypi](https://img.shields.io/pypi/v/qlient-core.svg)](https://pypi.python.org/pypi/qlient-core)
+[![versions](https://img.shields.io/pypi/pyversions/qlient-core.svg)](https://github.com/qlient-org/python-qlient-core)
+[![license](https://img.shields.io/github/license/qlient-org/python-qlient-core.svg)](https://github.com/qlient-org/python-qlient-core/blob/master/LICENSE)
+
+This is the core for a blazingly fast and modern graphql (async) client that was designed with simplicity in mind.
 
 ## Key Features
 
@@ -10,187 +16,19 @@ Core for building (async) qlient ``Client`` implementations.
 * Support for different backends
 * Easily extend your client through plugins.
 
-## Quick Introduction
-
-### Walk-through
-
-Below is a walk-through for the implementation of a [strawberry](https://strawberry.rocks/) backend.
-
-If you do not want to follow the walk-through and just see the result,
-I suggest you skip to the [full script](#full-script).
-
-Otherwise, with no further ado lets get these fingers warm and ready for copy and paste.
-
-#### Creating the user type
-
-Let's start by creating a simple type we can query and mutate.
+## Quick Preview
 
 ```python
-import strawberry  # must be installed separately
+from qlient.core import Client, Backend, GraphQLResponse
 
 
-@strawberry.type
-class User:
-    name: str
-    age: int
-```
-
-#### Defining the data storage
-
-Next, we make a "database" that stores all our users.
-
-```python
-all_users: List[User] = [
-    User(name="Patrick", age=100)
-]
-```
-
-#### Creating the query type
-
-With an initial user in that list, we can now create the Query type and schema.
-
-```python
-@strawberry.type
-class Query:
-
-    @strawberry.field
-    async def get_users(self) -> List[User]:
-        return all_users
+class MyBackend(Backend):
+    """Must be implemented by you"""
 
 
-schema = strawberry.Schema(query=Query)
-```
+client = Client(MyBackend())
 
-#### Implement an AsyncBackend
+res: GraphQLResponse = client.query.get_my_thing("name")
 
-Now, moving on to creating the qlient Backend.
-
-```python
-from qlient.core import AsyncBackend, GraphQLRequest, GraphQLResponse
-
-
-class StrawberryBackend(AsyncBackend):
-
-    async def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
-        # get the result from the strawberry graphql schema
-        result = await schema.execute(
-            query=request.query,
-            operation_name=request.operation_name,
-            variable_values=request.variables,
-            root_value=request.root,
-            context_value=request.context,
-        )
-
-        # create the graphql response object
-        return GraphQLResponse(
-            request,
-            {
-                "data": result.data,
-                "errors": result.errors,
-                "extensions": result.extensions,
-            }
-        )
-```
-
-#### Create the AsyncClient
-
-And now finally, instantiating the Client:
-
-```python
-import asyncio
-from qlient.core import AsyncClient, GraphQLResponse
-
-
-async def main():
-    async with AsyncClient(StrawberryBackend()) as client:
-        # strawberry automatically converts snake_case to camelCase
-        result: GraphQLResponse = await client.query.getUsers(["name", "age"])
-        print(result.data)
-
-
-asyncio.run(main())
-```
-
-```json
-{
-  "getUsers": [
-    {
-      "name": "Patrick",
-      "age": 100
-    }
-  ]
-}
-```
-
-### Full Script
-
-```python
-import asyncio
-from typing import List
-
-import strawberry  # must be installed separately
-
-from qlient.core import (
-    AsyncClient,
-    AsyncBackend,
-    GraphQLRequest,
-    GraphQLResponse,
-)
-
-
-@strawberry.type
-class User:
-    name: str
-    age: int
-
-
-all_users: List[User] = [
-    User(name="Patrick", age=100)
-]
-
-
-@strawberry.type
-class Query:
-
-    @strawberry.field
-    async def get_users(self) -> List[User]:
-        return all_users
-
-
-schema = strawberry.Schema(query=Query)
-
-
-class StrawberryBackend(AsyncBackend):
-
-    async def execute_query(
-            self, request: GraphQLRequest
-    ) -> GraphQLResponse:
-        # get the result
-        result = await schema.execute(
-            query=request.query,
-            operation_name=request.operation_name,
-            variable_values=request.variables,
-            root_value=request.root,
-            context_value=request.context,
-        )
-
-        # create the graphql response object
-        return GraphQLResponse(
-            request,
-            {
-                "data": result.data,
-                "errors": result.errors,
-                "extensions": result.extensions,
-            }
-        )
-
-
-async def main():
-    async with AsyncClient(StrawberryBackend()) as client:
-        # strawberry automatically converts snake_case to camelCase
-        result: GraphQLResponse = await client.query.getUsers(["name", "age"])
-        print(result.data)
-
-
-asyncio.run(main())
+print(res.request.query)  # "query get_my_thing { get_my_thing { name } }"
 ```

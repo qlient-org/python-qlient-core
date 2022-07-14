@@ -7,3 +7,24 @@
 [![license](https://img.shields.io/github/license/qlient-org/python-qlient-core.svg)](https://github.com/qlient-org/python-qlient-core/blob/master/LICENSE)
 
 This is the core for a blazingly fast and modern graphql client that was designed with simplicity in mind.
+
+## Help
+
+See the [documentation](https://qlient-org.github.io/python-qlient-core/site/) for more details.
+
+## Quick Preview
+
+```python
+from qlient.core import Client, Backend, GraphQLResponse
+
+
+class MyBackend(Backend):
+    """Must be implemented by you"""
+
+
+client = Client(MyBackend())
+
+res: GraphQLResponse = client.query.get_my_thing("name")
+
+print(res.request.query)  # "query get_my_thing { get_my_thing { name } }"
+```
