@@ -11,6 +11,7 @@ help:
 	@echo " clean		remove all temporary files"
 	@echo " test		run all the tests"
 	@echo " report		print coverage report"
+	@echo " format		format the code"
 	@echo " docs		create the docs"
 	@echo " shell		open a Poetry shell"
 
@@ -36,6 +37,10 @@ test: $(INSTALL_STAMP)
 .PHONY: report
 report: $(INSTALL_STAMP)
 	$(POETRY) run coverage report
+
+.PHONY: format
+format: $(INSTALL_STAMP)
+	$(POETRY) run black .
 
 .PHONY: docs
 docs: $(INSTALL_STAMP)
