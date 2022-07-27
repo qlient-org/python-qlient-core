@@ -267,9 +267,11 @@ class RequestBuilder:
             root=self._root,
         )
 
+    # skipcq: PY-D0003
     def _auto_build_fields(self) -> Fields:
         return self._lookup_fields_for_type(self.operation_output, 0)
 
+    # skipcq: PY-D0003
     def _lookup_fields_for_type(self, _type: SchemaType, depth: int) -> Fields:
         _fields = Fields()
         for field in _type.fields:
