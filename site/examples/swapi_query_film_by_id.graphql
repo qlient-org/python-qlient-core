@@ -1,0 +1,28 @@
+query film($id: ID) {
+    film(id: $id) {
+        title
+        episodeID
+        openingCrawl
+        director
+        producers
+        releaseDate
+        speciesConnection {
+            totalCount
+        }
+        starshipConnection {
+            totalCount
+        }
+        vehicleConnection {
+            totalCount
+        }
+        characterConnection {
+            totalCount
+        }
+        planetConnection {
+            totalCount
+        }
+        created
+        edited
+        id
+    }
+}
