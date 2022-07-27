@@ -11,7 +11,9 @@ Otherwise, with no further ado lets get these fingers warm and ready for copy an
 
 ### Creating the user type
 
-Let's start by creating a simple type we can query and mutate.
+First things first, we have to set up everything related to the strawberry schema.
+
+Let's start by creating a simple `User` type we can query and mutate.
 
 ```python
 import strawberry  # must be installed separately
@@ -29,17 +31,25 @@ Next, we make a "database" that stores all our users.
 
 ```python
 all_users: List[User] = [
-    User(name="Patrick", age=100)
+    User(name="Patrick", age=100),
+    User(name="Daniel", age=9999),
 ]
 ```
 
 ### Creating the query type
 
-With an initial user in that list, we can now create the Query type and schema.
+With a few initial users in that list, we can now create the Query type and schema.
 
 ```python
 @strawberry.type
 class Query:
+
+    @strawberry.field
+    async def get_user(self, index: int) -> Optional[User]:
+        try:
+            return all_users[index]
+        except IndexError:
+            return None
 
     @strawberry.field
     async def get_users(self) -> List[User]:
@@ -92,21 +102,37 @@ from qlient.core import AsyncClient, GraphQLResponse
 async def main():
     async with AsyncClient(StrawberryBackend()) as client:
         # strawberry automatically converts snake_case to camelCase
-        result: GraphQLResponse = await client.query.getUsers(["name", "age"])
-        print(result.data)
+        result_1: GraphQLResponse = await client.query.getUsers(["name", "age"])
+        print(result_1.data)
+        
+        result_2: GraphQLResponse = await client.query.getUser(index=1)
+        print(result_2.data)
 
 
 asyncio.run(main())
 ```
-
+_(result_1.data)_
 ```json
 {
   "getUsers": [
     {
       "name": "Patrick",
       "age": 100
+    },
+    {
+      "name": "Daniel",
+      "age": 9999
     }
   ]
+}
+```
+_(result_2.data)_
+```json
+{
+  "getUser": {
+      "name": "Daniel",
+      "age": 9999
+    }
 }
 ```
 

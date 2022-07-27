@@ -8,9 +8,11 @@ nav:
   - Overview: index.md
   - Installation: install.md
   - Introduction: introduction.md
+  - Examples: examples.md
   - Usage:
       - Backends: usage/backend.md
       - Fields and Directives: usage/fields.md
+      - Proxies: usage/proxies.md
       - Plugins: usage/plugins.md
 
 repo_name: qlient-org/python-qlient-core

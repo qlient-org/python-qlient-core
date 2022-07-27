@@ -1,0 +1,11 @@
+query allFilms {
+    allFilms {
+        totalCount
+        films {
+            id
+            title
+            director
+            releaseDate
+        }
+    }
+}

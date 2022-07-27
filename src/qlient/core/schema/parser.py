@@ -24,9 +24,9 @@ class ParseResult:
         self.directives: Optional[Dict[str, Directive]] = directives
 
 
-def extract_type(type_name: str, types: Optional[Dict[str, Type]]) -> Optional[Type]:
+def extract_type(type_name: Optional[str], types: Dict[str, Type]) -> Optional[Type]:
     """Extract a type from all types"""
-    if types is None:
+    if not type_name:
         return None
     return types.get(type_name)
 
@@ -36,8 +36,6 @@ def extract_query_type(
 ) -> Optional[Type]:
     """Extract the name of the query type from the schema"""
     query_type: Optional[Dict] = schema.get("queryType")
-    if not query_type:
-        return None
     query_type_name: Optional[str] = query_type.get("name")
     return extract_type(query_type_name, types)
 
@@ -85,7 +83,7 @@ def parse_types(schema: Dict) -> Dict[str, Type]:
         raise NoTypesFound(schema)
 
     types_list: List[Type] = [
-        Type(**type_dict) for type_dict in types_list if type_dict
+        Type.parse(type_dict) for type_dict in types_list if type_dict
     ]
 
     types_dict: Dict[str, Type] = {_type.name: _type for _type in types_list if _type}
@@ -114,14 +112,10 @@ def parse_directives(schema: Dict) -> Optional[Dict[str, Directive]]:
     if not directives_list:
         return None
 
-    directives_list: List[Directive] = [
-        Directive(**directive_dict)
-        for directive_dict in directives_list
-        if directive_dict
-    ]
-
     directives_dict: Dict[str, Directive] = {
-        _directive.name: _directive for _directive in directives_list if _directive
+        _directive.name: _directive
+        for _directive in Directive.parse_list(directives_list)
+        if _directive
     }
 
     return directives_dict

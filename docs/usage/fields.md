@@ -3,14 +3,6 @@
 The `Fields` class is a powerful class for making nested or pre-configured field selections. In combination with
 the `Field` class you can create every query you need.
 
-## Using the Field Class
-
-The Field class supports all major graphql features ranging from name, alias to directives and field inputs.
-
-```python 
-{% include "../examples/fields_field.py" %}
-```
-
 ## Using the Fields Class
 
 ```python 

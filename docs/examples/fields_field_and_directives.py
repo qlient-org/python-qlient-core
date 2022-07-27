@@ -9,7 +9,7 @@ my_person_selection = Fields(
     Field(
         "homeworld",
         _sub_fields=my_home_world_selection,
-        _directive=Directive("include", **{"if": True}),
+        _directive=Directive("include"),
     ),
 )
 
@@ -18,7 +18,7 @@ my_person_selection = Fields(
 #     id
 #     name
 #     my_height: height
-#     homeworld @include(if: $include_123456789_if) {
+#     homeworld @include {
 #         id
 #         name
 #         population

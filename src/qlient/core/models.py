@@ -13,11 +13,9 @@ from qlient.core._types import (
     GraphQLAnyReturnType,
 )
 from qlient.core.schema.models import (
-    Input as SchemaInput,
     Type as SchemaType,
     Field as SchemaField,
     Directive as SchemaDirective,
-    TypeRef as SchemaTypeRef,
 )
 from qlient.core.schema.schema import Schema
 
@@ -25,9 +23,8 @@ from qlient.core.schema.schema import Schema
 class Directive:
     """Class to create a directive on a Field."""
 
-    def __init__(self, _name: str, **directive_variables):
+    def __init__(self, _name: str):
         self.name: str = _name
-        self.variables = directive_variables
 
     def prepare(self, schema: Schema) -> "PreparedDirective":
         """Prepare this directive and return a ref:`PreparedDirective`
@@ -42,7 +39,6 @@ class Directive:
         p.prepare(
             schema=schema,
             name=self.name,
-            variables=self.variables,
         )
         return p
 
@@ -68,29 +64,20 @@ class PreparedDirective:
         self.schema_directive: Optional[SchemaDirective] = None
         # the name of the directive
         self.name: Optional[str] = None
-        # a dictionary with the variable name mapped to the variable reference
-        self.var_name_to_var_ref: Optional[Dict[str, str]] = None
-        # a dictionary with the variable reference mapped to the variable value
-        self.var_ref_to_var_value: Optional[Dict[str, Any]] = None
-        # a dictionary with the variable reference mapped to the variable type
-        self.var_ref_to_var_input: Optional[Dict[str, SchemaTypeRef]] = None
 
     def prepare(
         self,
         schema: Schema,
         name: Optional[str] = None,
-        variables: Optional[Dict[str, Any]] = None,
     ):
         """Method to prepare this directive after it has been initialized.
 
         Args:
             schema: holds the client's schema that is currently being used.
             name: holds the name of this directive
-            variables: holds variables for this directive
         """
         self.prepare_name(name)
         self.prepare_type_checking(schema)
-        self.prepare_input(variables)
 
     def prepare_type_checking(self, schema: Schema):
         """Method to prepare for type checking.
@@ -121,51 +108,6 @@ class PreparedDirective:
             raise ValueError("Directive name must have a value.")
         self.name = name
 
-    def prepare_input(self, variables: Optional[Dict[str, Any]]):
-        """Method to prepare the directive inputs (variables)
-
-        This iterates over all given inputs and registers them for further usage.
-        To ensure a unique variables key,
-        the reference key is prefixed with the name and id of this directive.
-
-        If there is an input given that is not part of this directive,
-        it will raise a ValueError.
-
-        Args:
-            variables: holds the inputs for this directive.
-
-        Raises:
-            ValueError: when a given input name is not part of this directive.
-        """
-        if not self.name:
-            raise ValueError(
-                f"Name must be set before calling `{self.prepare_input.__name__}`"
-            )
-        if self.schema_directive is None:
-            raise ValueError(
-                f"Directive must be set before calling `{self.prepare_input.__name__}`"
-            )
-        ref_prefix = f"{self.name}_{id(self)}"
-        var_to_ref = {}
-        ref_to_val = {}
-        ref_to_type = {}
-        for key, value in variables.items():
-            input_type: Optional[
-                SchemaInput
-            ] = self.schema_directive.arg_name_to_arg.get(key)
-            if input_type is None:
-                raise ValueError(
-                    f"Input `{key}` not supported for directive {self.name}"
-                )
-            ref_key = f"{ref_prefix}_{key}"
-            var_to_ref[key] = ref_key
-            ref_to_val[ref_key] = value
-            ref_to_type[ref_key] = input_type.type
-
-        self.var_name_to_var_ref = var_to_ref
-        self.var_ref_to_var_value = ref_to_val
-        self.var_ref_to_var_input = ref_to_type
-
     def __str__(self) -> str:
         return self.__gql__()
 
@@ -176,15 +118,6 @@ class PreparedDirective:
             a string with the graphql representation of this directive
         """
         builder = f"@{self.name}"
-        if self.var_name_to_var_ref:
-            builder += "("
-            builder += " ".join(
-                map(
-                    lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
-                    self.var_name_to_var_ref.items(),
-                )
-            )
-            builder += ")"
         return builder
 
     def __hash__(self) -> int:
@@ -211,7 +144,6 @@ class Field:
         _alias: Optional[str] = None,
         _directive: Optional[Directive] = None,
         _sub_fields: Optional[Any] = None,
-        **field_variables,
     ):
         self.name: str = _name
         self.alias: Optional[str] = _alias
@@ -219,7 +151,6 @@ class Field:
         self.sub_fields: Optional["Fields"] = (
             Fields(_sub_fields) if _sub_fields is not None else None
         )
-        self.variables: Dict[str, Any] = field_variables
 
     def __and__(self, other) -> "Fields":
         return self.__add__(other)
@@ -235,11 +166,15 @@ class Field:
             return Fields(self) + other
         raise TypeError(f"Can not handle type `{type(other)}`")
 
-    def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedField":
+    def prepare(
+        self,
+        parent_type: SchemaType,
+        schema: Schema,
+    ) -> "PreparedField":
         """Method to convert this field into a PreparedField
 
         Args:
-            parent: holds the parent of this Field
+            parent_type: holds the parent type of this Field
             schema: holds the schema that should be used for validation
 
         Returns:
@@ -247,13 +182,12 @@ class Field:
         """
         p = PreparedField()
         p.prepare(
-            parent=parent,
+            parent_type=parent_type,
             schema=schema,
             name=self.name,
             alias=self.alias,
             directive=self.directive,
             sub_fields=self.sub_fields,
-            variables=self.variables,
         )
         return p
 
@@ -275,8 +209,10 @@ class PreparedField:
     """
 
     def __init__(self):
+        # the field parent type
+        self.parent_type: Optional[SchemaType] = None
         # the graphql schema field type
-        self.schema_field: Optional[SchemaField] = None
+        self.field_type: Optional[SchemaField] = None
         # the name of the field
         self.name: Optional[str] = None
         # the alias of the field
@@ -285,38 +221,29 @@ class PreparedField:
         self.directive: Optional[PreparedDirective] = None
         # a sub selection of fields of this type
         self.sub_fields: Optional[PreparedFields] = None
-        # a dictionary with the variable name mapped to the variable reference
-        self.var_name_to_var_ref: Optional[Dict[str, str]] = None
-        # a dictionary with the variable reference mapped to the variable value
-        self.var_ref_to_var_value: Optional[Dict[str, Any]] = None
-        # a dictionary with the variable reference mapped to the variable type
-        self.var_ref_to_var_input: Optional[Dict[str, SchemaTypeRef]] = None
 
     def prepare(
         self,
-        parent: SchemaType,
+        parent_type: SchemaType,
         schema: Schema,
         name: Optional[str] = None,
         alias: Optional[str] = None,
         directive: Optional[Directive] = None,
         sub_fields: Optional[Any] = None,
-        variables: Optional[Dict[str, Any]] = None,
     ):
         """Method to prepare this instance
 
         Args:
-            parent: holds the parent schema type of this field
+            parent_type: holds the parent schema type of this field
             schema: holds the schema that should be used for validation
             name: holds the name of this explicit field
             alias: holds an alias that should be used for this field
             directive: holds a directive that should be used on this field
             sub_fields: holds a selection of sub_fields for this field
-            variables: holds input variables for this field
         """
         self.prepare_name(name, alias)
-        self.prepare_type_checking(parent)
+        self.prepare_type_checking(parent_type)
         self.prepare_directive(schema, directive)
-        self.prepare_input(variables)
         self.prepare_sub_fields(schema, sub_fields)
 
     def prepare_name(self, name: Optional[str], alias: Optional[str]):
@@ -331,21 +258,22 @@ class PreparedField:
         self.name = name
         self.alias = alias
 
-    def prepare_type_checking(self, parent: SchemaType):
+    def prepare_type_checking(self, parent_type: SchemaType):
         """Method to prepare this field for type checking.
 
         Args:
-            parent: holds the schema type of the parent field
+            parent_type: holds the schema type of the parent field
         """
         if not self.name:
             raise ValueError(
                 f"Name must be set before "
                 f"calling `{self.prepare_type_checking.__name__}`"
             )
-        schema_field_type = parent.field_name_to_field.get(self.name)
+        self.parent_type = parent_type
+        schema_field_type = parent_type.field_name_to_field.get(self.name)
         if schema_field_type is None:
             raise ValueError(f"No Field found with name `{self.name}` in schema.")
-        self.schema_field = schema_field_type
+        self.field_type = schema_field_type
 
     def prepare_directive(self, schema: Schema, directive: Optional[Directive]):
         """Method to prepare the directive of this field
@@ -358,7 +286,11 @@ class PreparedField:
             return
         self.directive = directive.prepare(schema)
 
-    def prepare_sub_fields(self, schema: Schema, sub_fields: Optional["Fields"]):
+    def prepare_sub_fields(
+        self,
+        schema: Schema,
+        sub_fields: Optional["Fields"],
+    ):
         """Method to prepare the subfields selection
 
         Args:
@@ -367,75 +299,8 @@ class PreparedField:
         """
         if sub_fields is None:
             return
-        new_parent = self.schema_field.type.leaf_type
-        self.sub_fields = sub_fields.prepare(new_parent, schema)
-
-    def prepare_input(self, variables: Optional[Dict[str, Any]]):
-        """Method to prepare the field inputs
-
-        Each Field can have its own input values.
-        To make this happen and allow for deep inputs like dictionaries or lists,
-        they must be registered at operation level.
-        In order to do so, they must be referenced.
-
-        So this method iterates over all given variables
-        and creates unique references for them.
-        It then maps the reference to the value.
-
-        Args:
-            variables: holds a dictionary where the name of the variable
-                        is mapped to its value
-        """
-        if not self.name:
-            raise ValueError(
-                f"Name must be set before calling `{self.prepare_input.__name__}`"
-            )
-        if self.schema_field is None:
-            raise ValueError(
-                f"Field must be set before calling `{self.prepare_input.__name__}`"
-            )
-        ref_prefix = f"{f'{self.alias}_' if self.alias else ''}{self.name}_{id(self)}"
-        var_to_ref = {}
-        ref_to_val = {}
-        ref_to_type = {}
-        for key, value in variables.items():
-            input_type: Optional[SchemaInput] = self.schema_field.arg_name_to_arg.get(
-                key
-            )
-            if input_type is None:
-                raise ValueError(f"Input `{key}` not supported for field {self.name}")
-            ref_key = f"{ref_prefix}_{key}"
-            var_to_ref[key] = ref_key
-            ref_to_val[ref_key] = value
-            ref_to_type[ref_key] = input_type.type
-
-        self.var_name_to_var_ref = var_to_ref
-        self.var_ref_to_var_value = ref_to_val
-        self.var_ref_to_var_input = ref_to_type
-
-    @property
-    def reduced_var_ref_to_var_input_type_ref(self) -> Dict[str, SchemaTypeRef]:
-        """Property to generate a flattened var_ref_to_var_input_type map.
-
-        Returns:
-            a flattened dictionary with var ref to var input type ref
-        """
-        ref_to_input_type_ref = self.var_ref_to_var_input.copy()
-        if self.sub_fields is not None:
-            ref_to_input_type_ref.update(self.sub_fields.var_ref_to_var_type)
-        return ref_to_input_type_ref
-
-    @property
-    def reduced_var_ref_to_var_value(self) -> Dict[str, Any]:
-        """Property to generate a flattened var_ref_to_var_value map.
-
-        Returns:
-            a flattened dictionary with var ref to var value
-        """
-        ref_to_value = self.var_ref_to_var_value.copy()
-        if self.sub_fields is not None:
-            ref_to_value.update(self.sub_fields.var_ref_to_var_value)
-        return ref_to_value
+        new_parent_type = self.field_type.type.leaf_type
+        self.sub_fields = sub_fields.prepare(new_parent_type, schema)
 
     def __gql__(self) -> str:
         """Method to create a graphql representation of this field
@@ -444,15 +309,6 @@ class PreparedField:
             a string with the graphql representation of this field
         """
         builder = f"{f'{self.alias}: ' if self.alias else ''}{self.name}"
-        if self.var_name_to_var_ref:
-            builder += "("
-            builder += " ".join(
-                map(
-                    lambda name_to_ref: f"{name_to_ref[0]}: ${name_to_ref[1]}",
-                    self.var_name_to_var_ref.items(),
-                )
-            )
-            builder += ")"
         if self.directive is not None:
             builder += f" {self.directive.__gql__()}"
         if self.sub_fields is not None:
@@ -546,6 +402,8 @@ class Fields:
         self.selected_fields: List[Field] = list(_fields.values())
 
     def __contains__(self, item) -> bool:
+        if isinstance(item, str):
+            item = Field(item)
         return item in self.selected_fields
 
     def __and__(self, other) -> "Fields":
@@ -595,11 +453,15 @@ class Fields:
     def __hash__(self) -> int:
         return hash(tuple(self.selected_fields))
 
-    def prepare(self, parent: SchemaType, schema: Schema) -> "PreparedFields":
+    def prepare(
+        self,
+        parent_type: SchemaType,
+        schema: Schema,
+    ) -> "PreparedFields":
         """Method to convert this fields instance into a PreparedFields instance
 
         Args:
-            parent: holds the parent of this Field
+            parent_type: holds the parent type of this Field
             schema: holds the schema that should be used for validation
 
         Returns:
@@ -607,7 +469,7 @@ class Fields:
         """
         p = PreparedFields()
         p.prepare(
-            parent=parent,
+            parent_type=parent_type,
             schema=schema,
             fields=self.selected_fields,
         )
@@ -625,53 +487,41 @@ class PreparedFields:
         self.fields: Optional[List[PreparedField]] = None
 
     def prepare(
-        self, parent: SchemaType, schema: Schema, fields: Optional[List[Field]] = None
+        self,
+        parent_type: SchemaType,
+        schema: Schema,
+        fields: Optional[List[Field]] = None,
     ):
         """Method to prepare this instance after initialization.
 
         Args:
-            parent: holds the parent's field schema type
+            parent_type: holds the parent's field schema type
             schema: holds the schema to use for validation and type lookups.
             fields: holds the list of fields that were selected
         """
-        self.prepare_fields(parent, schema, fields)
+        self.prepare_fields(parent_type, schema, fields)
 
     def prepare_fields(
-        self, parent: SchemaType, schema: Schema, fields: Optional[List[Fields]]
+        self,
+        parent_type: SchemaType,
+        schema: Schema,
+        fields: Optional[List[Fields]],
     ):
         """Method to turn all selected fields into prepared fields.
 
         Args:
-            parent: holds this fields instance parents field schema type.
+            parent_type: holds this fields instance parents field schema type.
             schema: holds the schema to use for validation and type lookups.
             fields: holds a list of fields that should be prepared
         """
-        fields = fields if fields is not None else []
-        self.fields = [field.prepare(parent, schema) for field in fields]
-
-    @property
-    def var_ref_to_var_type(self) -> Dict[str, SchemaTypeRef]:
-        """Property to generate a flattened var_ref_to_var_input_type map.
-
-        Returns:
-            a flattened dictionary with var ref to var input type ref
-        """
-        ref_to_type = {}
-        for field in self.fields:
-            ref_to_type.update(field.reduced_var_ref_to_var_input_type_ref)
-        return ref_to_type
-
-    @property
-    def var_ref_to_var_value(self) -> Dict[str, Any]:
-        """Property to generate a flattened var_ref_to_var_value map.
-
-        Returns:
-            a flattened dictionary with var ref to var value
-        """
-        ref_to_value = {}
-        for field in self.fields:
-            ref_to_value.update(field.reduced_var_ref_to_var_value)
-        return ref_to_value
+        fields: List[Field] = fields if fields is not None else []
+        self.fields = [
+            field.prepare(
+                parent_type,
+                schema,
+            )
+            for field in fields
+        ]
 
     def __gql__(self) -> str:
         """Method to create a graphql representation of this fields instance
@@ -756,3 +606,6 @@ class GraphQLResponse:
     def __aiter__(self):
         # for an asynchronous subscription
         return self.raw.__aiter__()
+
+
+auto = object()

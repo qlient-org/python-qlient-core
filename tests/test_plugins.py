@@ -1,8 +1,15 @@
 import qlient.core
-from qlient.core.plugins import apply_pre, apply_post
+from qlient.core.plugins import apply_pre, apply_post, Plugin
 
 
-def test_basic_plugins(strawberry_backend, my_plugin):
+def test_base_plugin(graphql_response, graphql_request):
+    base_plugin = Plugin()
+
+    assert graphql_request == base_plugin.pre(graphql_request)
+    assert graphql_response == base_plugin.post(graphql_response)
+
+
+def test_custom_plugin(strawberry_backend, my_plugin):
     client = qlient.core.Client(strawberry_backend, plugins=[my_plugin])
 
     assert my_plugin in client.plugins

@@ -358,6 +358,12 @@ class Field:
         return {arg.name: arg for arg in self.args}
 
     @property
+    def output_type(self) -> Optional["Type"]:
+        if self.type is None:
+            return None
+        return self.type.leaf_type
+
+    @property
     def output_type_name(self) -> Optional[str]:
         """Property to return the output type name (which is the leaf type name)
 
@@ -367,9 +373,20 @@ class Field:
         Returns:
             Either None (if `self.type` is None) or the leaf type name
         """
-        if self.type is None:
+        leaf_type = self.output_type
+        if leaf_type is None:
             return None
-        return self.type.leaf_type_name
+        return leaf_type.name
+
+    @property
+    def is_object_kind(self) -> bool:
+        """True if the field type is of kind OBJECT"""
+        return self.output_type and self.output_type.kind == Kind.OBJECT
+
+    @property
+    def is_scalar_kind(self) -> bool:
+        """True if the field type is of kind SCALAR"""
+        return self.output_type and self.output_type.kind == Kind.SCALAR
 
 
 class EnumValue:

@@ -1,5 +1,5 @@
 import asyncio
-from typing import List
+from typing import List, Optional
 
 import strawberry  # must be installed separately
 
@@ -17,11 +17,21 @@ class User:
     age: int
 
 
-all_users: List[User] = [User(name="Patrick", age=100)]
+all_users: List[User] = [
+    User(name="Patrick", age=100),
+    User(name="Daniel", age=9999),
+]
 
 
 @strawberry.type
 class Query:
+    @strawberry.field
+    async def get_user(self, index: int) -> Optional[User]:
+        try:
+            return all_users[index]
+        except IndexError:
+            return None
+
     @strawberry.field
     async def get_users(self) -> List[User]:
         return all_users
@@ -55,8 +65,11 @@ class StrawberryBackend(AsyncBackend):
 async def main():
     async with AsyncClient(StrawberryBackend()) as client:
         # strawberry automatically converts snake_case to camelCase
-        result: GraphQLResponse = await client.query.getUsers(["name", "age"])
-        print(result.data)
+        result_1: GraphQLResponse = await client.query.getUsers(["name", "age"])
+        print(result_1.data)
+
+        result_2: GraphQLResponse = await client.query.getUser(index=1)
+        print(result_2.data)
 
 
 asyncio.run(main())

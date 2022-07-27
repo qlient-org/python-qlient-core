@@ -11,6 +11,9 @@ def test_schema(swapi_schema):
     assert swapi_schema.mutation_type is None
     assert swapi_schema.subscription_type is None
 
+    # check if __getattr__ works
+    assert swapi_schema.Root == swapi_schema.query_type
+
     assert (
         str(swapi_schema)
         == "<Schema(query_type=<Type(name=`Root`)>, mutation_type=None, subscription_type=None)>"

@@ -1,4 +1,4 @@
-from qlient import Fields, Field
+from qlient.core import Fields, Field
 
 name_fields = Fields("first_name", "last_name")
 age_field = Field("age")

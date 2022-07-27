@@ -1,15 +1,17 @@
+"""This module contains the operation proxy instances"""
 import abc
 import itertools
-from typing import Dict, Iterable, List, Optional, Any
+from typing import Dict, Iterable, List, Any, Union
 
 from qlient.core._internal import await_if_coro
-from qlient.core._types import GraphQLContextType, GraphQLRootType, GraphQLQueryType
+from qlient.core._types import GraphQLContextType, GraphQLRootType
 from qlient.core.backends import Backend
-from qlient.core.builder import TypedGQLQueryBuilder, Fields
+from qlient.core.builder import RequestBuilder, Fields
 from qlient.core.models import (
     GraphQLResponse,
     GraphQLRequest,
     GraphQLSubscriptionRequest,
+    auto,
 )
 from qlient.core.plugins import Plugin, apply_pre, apply_post
 from qlient.core.schema.models import Field as SchemaField
@@ -20,12 +22,9 @@ from qlient.core.settings import Settings
 class OperationProxy:
     """The operation proxy"""
 
-    _request_factory = GraphQLRequest
-
     operation_type: str
     field: SchemaField
     proxy: "ServiceProxy"
-    _request: GraphQLRequest
 
     def __init__(
         self,
@@ -37,77 +36,8 @@ class OperationProxy:
         self.field = field
         self.proxy = proxy
 
-        self.query_builder: TypedGQLQueryBuilder = TypedGQLQueryBuilder(
-            self.operation_type,
-            self.field,
-            self.proxy.schema,
-            self.proxy.settings,
-        )
-        self._request = self._request_factory()
-
         if proxy.settings.use_schema_description and field.description:
             self.__doc__ = field.description
-
-    def select(self, *args, **kwargs) -> "OperationProxy":
-        """Method to select fields
-
-        Args:
-            *args: holds the fields to select
-            **kwargs: holds nested fields to select
-
-        Returns:
-            self
-        """
-        self._request.variables.update(self.query_builder.fields(*args, **kwargs))
-        return self
-
-    def variables(self, **kwargs) -> "OperationProxy":
-        """Method to register variables for the root level
-
-        Args:
-            **kwargs: holds variables for the root level
-
-        Returns:
-            self
-        """
-        self._request.variables.update(self.query_builder.variables(**kwargs))
-        return self
-
-    def context(self, context: GraphQLContextType) -> "OperationProxy":
-        """Method to set the execution context for the operation
-
-        Args:
-            context: holds the context
-
-        Returns:
-            self
-        """
-        self._request.context = context
-        return self
-
-    def root(self, root: GraphQLRootType) -> "OperationProxy":
-        """Method to set the execution root for the operation
-
-        Args:
-            root: holds the operation root
-
-        Returns:
-            self
-        """
-        self._request.root = root
-        return self
-
-    def execute(self) -> GraphQLResponse:
-        """Method to execute the operation and return the graphql response.
-
-        Returns:
-            The graphql response as returned from the server
-        """
-        self._request.query = self.query
-        self._request.operation_name = self.field.name
-        response = self.proxy.send(self._request)
-        self._request = self._request_factory()  # reset the request
-        return response
 
     def __str__(self) -> str:
         """Return a simple string representation of this instance"""
@@ -119,69 +49,57 @@ class OperationProxy:
         class_name = self.__class__.__name__
         return f"{class_name}(field={self.field})"
 
-    @property
-    def query(self) -> GraphQLQueryType:
-        """Property to build the graphql query string
+    def create_request(
+        self,
+        _fields: Union[Fields, Iterable[str], List[str], None] = auto,
+        _context: GraphQLContextType = None,
+        _root: GraphQLRootType = None,
+        **inputs,
+    ) -> GraphQLRequest:
+        """Method to create the request instance
+
+        Args:
+            _fields: holds the selected fields
+            _context: holds the request context
+            _root: holds the request root
+            **inputs: holds the request inputs
 
         Returns:
-            The GraphQL Query String
+            The GraphQLRequest instance
         """
-        return self.query_builder.build()
-
-    def __gql__(self) -> GraphQLQueryType:
-        return self.query
+        return (
+            RequestBuilder(
+                self.operation_type,
+                self.field,
+                self.proxy.schema,
+                self.proxy.settings,
+            )
+            .context(_context)
+            .root(_root)
+            .fields(_fields)
+            .variables(**inputs)
+        ).build()
 
     def __call__(
         self,
-        _fields: Optional[Fields] = None,
-        _context: GraphQLContextType = None,
-        _root: GraphQLRootType = None,
-        **query_variables,
+        *args,
+        **kwargs,
     ) -> GraphQLResponse:
-        if _fields:
-            self.select(_fields)
-        if query_variables:
-            self.variables(**query_variables)
-        if _context:
-            self.context(_context)
-        if _root:
-            self.root(_root)
-        return self.execute()
+        request = self.create_request(*args, **kwargs)
+        return self.proxy.send(request)
 
 
 class AsyncOperationProxy(OperationProxy):
     """The async operation proxy"""
 
     # skipcq: PYL-W0236
-    async def execute(self) -> GraphQLResponse:
-        """Method to execute the operation and return the graphql response.
-
-        Returns:
-            The graphql response as returned from the server
-        """
-        self._request.query = self.query
-        self._request.operation_name = self.field.name
-        response = await await_if_coro(self.proxy.send(self._request))
-        self._request = GraphQLRequest()  # reset the request
-        return response
-
-    # skipcq: PYL-W0236
     async def __call__(
         self,
-        _fields: Optional[Fields] = None,
-        _context: GraphQLContextType = None,
-        _root: GraphQLRootType = None,
-        **query_variables,
+        *args,
+        **kwargs,
     ) -> GraphQLResponse:
-        if _fields:
-            self.select(_fields)
-        if query_variables:
-            self.variables(**query_variables)
-        if _context:
-            self.context(_context)
-        if _root:
-            self.root(_root)
-        return await self.execute()
+        request = self.create_request(*args, **kwargs)
+        return await await_if_coro(self.proxy.send(request))
 
 
 class QueryProxy(OperationProxy):
@@ -219,58 +137,44 @@ class AsyncMutationProxy(MutationProxy, AsyncOperationProxy):
 class SubscriptionProxy(OperationProxy):
     """Represents the operation proxy for subscriptions"""
 
-    _request_factory = GraphQLSubscriptionRequest
-    _request = GraphQLSubscriptionRequest
-
     def __init__(self, proxy: "SubscriptionServiceProxy", operation_field: SchemaField):
         super(SubscriptionProxy, self).__init__("subscription", operation_field, proxy)
 
-    def subscription_id(self, subscription_id: str) -> "SubscriptionProxy":
-        """Method to set the subscription id for the subscription
-
-        Args:
-            subscription_id: holds the subscription id
-
-        Returns:
-            self
-        """
-        self._request.subscription_id = subscription_id
-        return self
-
-    def options(self, **options: Dict[str, Any]) -> "OperationProxy":
-        """Method to set the initial subscription options for this subscription
-
-        Args:
-            **options: holds the subscription options
-
-        Returns:
-            self
-        """
-        self._request.options.update(options)
-        return self
-
-    def __call__(
+    def create_request(
         self,
-        _fields: Optional[Fields] = None,
+        _fields: Union[Fields, Iterable[str], List[str], None] = auto,
         _context: GraphQLContextType = None,
         _root: GraphQLRootType = None,
         _subscription_id: str = None,
         _options: Dict[str, Any] = None,
-        **query_variables,
-    ) -> GraphQLResponse:
-        if _fields:
-            self.select(_fields)
-        if query_variables:
-            self.variables(**query_variables)
-        if _context:
-            self.context(_context)
-        if _root:
-            self.root(_root)
-        if _subscription_id:
-            self.subscription_id(_subscription_id)
-        if _options:
-            self.options(**_options)
-        return self.execute()
+        **inputs,
+    ) -> GraphQLSubscriptionRequest:
+        """Method to create the request instance
+
+        Args:
+            _fields: holds the selected fields
+            _context: holds the request context
+            _root: holds the request root
+            _subscription_id: holds the identifier of the subscription
+            _options: holds the subscription options
+            **inputs: holds the request inputs
+
+        Returns:
+            The GraphQLRequest instance
+        """
+        request = super(SubscriptionProxy, self).create_request(
+            _fields=_fields, _context=_context, _root=_root, **inputs
+        )
+        request = GraphQLSubscriptionRequest(
+            query=request.query,
+            variables=request.variables,
+            operation_name=request.operation_name,
+            context=request.context,
+            root=request.root,
+            subscription_id=_subscription_id,
+            options=_options,
+        )
+        return request
 
 
 class AsyncSubscriptionProxy(SubscriptionProxy, AsyncOperationProxy):
@@ -420,7 +324,7 @@ class QueryServiceProxy(ServiceProxy):
     def get_bindings(self) -> Dict[str, _operation_proxy_type]:
         """Method to get the query service bindings"""
         bindings = {}
-        if not self.schema.query_type:
+        if not self.schema.query_type and not self.schema.query_type.fields:
             return bindings
 
         for field in self.schema.query_type.fields:
@@ -455,7 +359,7 @@ class MutationServiceProxy(ServiceProxy):
     def get_bindings(self) -> Dict[str, _operation_proxy_type]:
         """Method to get the mutation service bindings"""
         bindings = {}
-        if not self.schema.mutation_type:
+        if not self.schema.mutation_type and not self.schema.mutation_type.fields:
             return bindings
 
         for field in self.schema.mutation_type.fields:
@@ -490,7 +394,10 @@ class SubscriptionServiceProxy(ServiceProxy):
             A dictionary with the service name bound to the subscription service proxy
         """
         bindings = {}
-        if not self.schema.subscription_type:
+        if (
+            not self.schema.subscription_type
+            and not self.schema.subscription_type.fields
+        ):
             return bindings
 
         for field in self.schema.subscription_type.fields:

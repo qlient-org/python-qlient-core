@@ -1,4 +1,4 @@
-from qlient import Fields
+from qlient.core import Fields
 
 nested_fields = Fields(
     "first_name",  # will be converted to Field("first_name")
