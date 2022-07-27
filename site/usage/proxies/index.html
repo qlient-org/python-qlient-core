@@ -496,8 +496,8 @@ that is responsible for creating the request and sending it to the backend.</p>
 
 <span class="n">request</span><span class="p">:</span> <span class="n">GraphQLRequest</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">create_request</span><span class="p">([</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">],</span> <span class="n">foo</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
 
-<span class="k">assert</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span> <span class="o">==</span> <span class="s2">&quot;query X($foo: String) { X(foo: $foo) { foo bar } }&quot;</span>
-<span class="k">assert</span> <span class="n">request</span><span class="o">.</span><span class="n">variables</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="p">)</span>  <span class="c1"># &quot;query X($foo: String) { X(foo: $foo) { foo bar } }&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>  <span class="c1"># {&quot;foo&quot;: &quot;test&quot;}</span>
 </code></pre></div>
 
               

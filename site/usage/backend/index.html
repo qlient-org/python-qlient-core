@@ -490,6 +490,8 @@ backend is probably going to be some sort of web server.</p>
 
 <span class="nd">@strawberry</span><span class="o">.</span><span class="n">type</span>
 <span class="k">class</span> <span class="nc">User</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The User object&quot;&quot;&quot;</span>
+
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
@@ -502,8 +504,11 @@ backend is probably going to be some sort of web server.</p>
 
 <span class="nd">@strawberry</span><span class="o">.</span><span class="n">type</span>
 <span class="k">class</span> <span class="nc">Query</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The strawberry query type&quot;&quot;&quot;</span>
+
     <span class="nd">@strawberry</span><span class="o">.</span><span class="n">field</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get a user by index&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">all_users</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
@@ -511,16 +516,22 @@ backend is probably going to be some sort of web server.</p>
 
     <span class="nd">@strawberry</span><span class="o">.</span><span class="n">field</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all users&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">all_users</span>
 
 
-<span class="n">schema</span> <span class="o">=</span> <span class="n">strawberry</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Query</span><span class="p">)</span>
+<span class="n">my_schema</span> <span class="o">=</span> <span class="n">strawberry</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Query</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">StrawberryBackend</span><span class="p">(</span><span class="n">AsyncBackend</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The strawberry backend&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">strawberry</span><span class="o">.</span><span class="n">Schema</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">execute_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">GraphQLRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GraphQLResponse</span><span class="p">:</span>
-        <span class="c1"># get the result</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">schema</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="sd">&quot;&quot;&quot;Execute a query on this backend&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
             <span class="n">query</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="p">,</span>
             <span class="n">operation_name</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">operation_name</span><span class="p">,</span>
             <span class="n">variable_values</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span>
@@ -540,7 +551,8 @@ backend is probably going to be some sort of web server.</p>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">StrawberryBackend</span><span class="p">())</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The main coroutine&quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">StrawberryBackend</span><span class="p">(</span><span class="n">my_schema</span><span class="p">))</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
         <span class="c1"># strawberry automatically converts snake_case to camelCase</span>
         <span class="n">result_1</span><span class="p">:</span> <span class="n">GraphQLResponse</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">getUsers</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result_1</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
