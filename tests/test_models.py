@@ -124,7 +124,7 @@ def test_field_add_list():
 # skipcq: PY-D0003
 def test_field_add_set():
     a = Field("a")
-    actual = a + {"b", "c", "c"}
+    actual = a + {"b", "c"}
 
     assert "a" in actual
     assert "b" in actual
