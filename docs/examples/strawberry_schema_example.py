@@ -41,6 +41,7 @@ schema = strawberry.Schema(query=Query)
 
 
 class StrawberryBackend(AsyncBackend):
+    # skipcq: PYL-R0201
     async def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
         # get the result
         result = await schema.execute(

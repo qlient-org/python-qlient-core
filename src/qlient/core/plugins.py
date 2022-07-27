@@ -9,6 +9,7 @@ from qlient.core.models import (
 class Plugin:
     """Base plugin"""
 
+    # skipcq: PYL-R0201
     def pre(self, request: GraphQLRequest) -> GraphQLRequest:
         """Override to make changes to the request before giving it to the backend
 
@@ -20,6 +21,7 @@ class Plugin:
         """
         return request
 
+    # skipcq: PYL-R0201
     def post(self, response: GraphQLResponse) -> GraphQLResponse:
         """Override to update the response when the result is in
 

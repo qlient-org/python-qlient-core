@@ -232,6 +232,7 @@ def my_plugin() -> _MyPlugin:
 
 
 class _FakeBackend(Backend):
+    # skipcq: PYL-R0201
     def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
         return GraphQLResponse(request, {"data": {}, "errors": [], "extensions": []})
 
