@@ -5,6 +5,7 @@
 [![pypi](https://img.shields.io/pypi/v/qlient-core.svg)](https://pypi.python.org/pypi/qlient-core)
 [![versions](https://img.shields.io/pypi/pyversions/qlient-core.svg)](https://github.com/qlient-org/python-qlient-core)
 [![license](https://img.shields.io/github/license/qlient-org/python-qlient-core.svg)](https://github.com/qlient-org/python-qlient-core/blob/master/LICENSE)
+[![codestyle](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
 
 This is the core for a blazingly fast and modern graphql client that was designed with simplicity in mind.
 
