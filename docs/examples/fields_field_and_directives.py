@@ -13,7 +13,8 @@ my_person_selection = Fields(
     ),
 )
 
-# Every variable name used in a Field or Directive is automatically generated and therefore unique.
+# Every variable name used in a Field or Directive
+# is automatically generated and therefore unique.
 # {
 #     id
 #     name
