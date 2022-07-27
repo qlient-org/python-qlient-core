@@ -6,7 +6,7 @@ strict: false
 
 nav:
   - Overview: index.md
-  - Installation: install.md
+  - Installation: installation.md
   - Introduction: introduction.md
   - Examples: examples.md
   - Usage:
