@@ -5,8 +5,9 @@ import tempfile
 
 import pytest
 
+from conftest import path_to_swapi_schema
 from qlient.core.models import GraphQLRequest, GraphQLResponse
-from qlient.core.schema.providers import FileSchemaProvider
+from qlient.core.schema.providers import FileSchemaProvider, SchemaProvider
 from qlient.core.schema.schema import Schema
 
 
@@ -35,6 +36,23 @@ def string_io_schema(raw_swapi_schema):
     my_file.seek(0)
     yield my_file
     my_file.close()
+
+
+def test_base_schema_provider():
+    with pytest.raises(NotImplementedError):
+        SchemaProvider.load_schema(...)
+
+
+# skipcq: PY-D0003
+def test_file_schema_provider_path(raw_swapi_schema):
+    my_provider = FileSchemaProvider(path_to_swapi_schema)
+    assert my_provider.load_schema() == Schema(raw_swapi_schema, my_provider)
+
+
+# skipcq: PY-D0003
+def test_file_schema_provider_str(raw_swapi_schema):
+    my_provider = FileSchemaProvider(str(path_to_swapi_schema.resolve()))
+    assert my_provider.load_schema() == Schema(raw_swapi_schema, my_provider)
 
 
 # skipcq: PY-D0003

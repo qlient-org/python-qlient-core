@@ -1,22 +1,14 @@
-# Quick Introduction
+import asyncio
+from typing import List, Optional
 
-## Walk-through
-
-Below is a walk-through for the implementation of a [strawberry](https://strawberry.rocks/) backend.
-
-If you do not want to follow the walk-through and just see the result,
-I suggest you skip to the [full script](#full-script).
-
-Otherwise, with no further ado lets get these fingers warm and ready for copy and paste.
-
-### Creating the user type
-
-First things first, we have to set up everything related to the strawberry schema.
-
-Let's start by creating a simple `User` type we can query and mutate.
-
-```python
 import strawberry  # must be installed separately
+
+from qlient.core import (
+    AsyncClient,
+    AsyncBackend,
+    GraphQLRequest,
+    GraphQLResponse,
+)
 
 
 @strawberry.type
@@ -25,24 +17,14 @@ class User:
 
     name: str
     age: int
-```
 
-### Defining the data storage
 
-Next, we make a "database" that stores all our users.
-
-```python
 all_users: List[User] = [
     User(name="Patrick", age=100),
     User(name="Daniel", age=9999),
 ]
-```
 
-### Creating the query type
 
-With a few initial users in that list, we can now create the Query type and schema.
-
-```python
 @strawberry.type
 class Query:
     """The strawberry query type"""
@@ -62,14 +44,6 @@ class Query:
 
 
 my_schema = strawberry.Schema(query=Query)
-```
-
-### Implement an AsyncBackend
-
-Now, moving on to creating the qlient Backend.
-
-```python
-from qlient.core import AsyncBackend, GraphQLRequest, GraphQLResponse
 
 
 class StrawberryBackend(AsyncBackend):
@@ -97,15 +71,6 @@ class StrawberryBackend(AsyncBackend):
                 "extensions": result.extensions,
             },
         )
-```
-
-### Create the AsyncClient
-
-And now finally, instantiating the Client:
-
-```python
-import asyncio
-from qlient.core import AsyncClient, GraphQLResponse
 
 
 async def main():
@@ -120,34 +85,3 @@ async def main():
 
 
 asyncio.run(main())
-```
-_(result_1.data)_
-```json
-{
-  "getUsers": [
-    {
-      "name": "Patrick",
-      "age": 100
-    },
-    {
-      "name": "Daniel",
-      "age": 9999
-    }
-  ]
-}
-```
-_(result_2.data)_
-```json
-{
-  "getUser": {
-      "name": "Daniel",
-      "age": 9999
-    }
-}
-```
-
-## Full Script
-
-```python 
-{% include "examples/strawberry_schema_example.py" %}
-```

@@ -1,7 +1,8 @@
 """This file contains the query builder and fields"""
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union, Iterable
 
-from qlient.core.models import PreparedFields, Fields
+from qlient.core._types import JSON, GraphQLContextType, GraphQLRootType
+from qlient.core.models import Fields, GraphQLRequest, auto, Field, PreparedFields
 from qlient.core.schema.models import (
     Input as SchemaInput,
     Type as SchemaType,
@@ -9,6 +10,10 @@ from qlient.core.schema.models import (
 )
 from qlient.core.schema.schema import Schema
 from qlient.core.settings import Settings
+
+_AnyField = Union[
+    Fields, Field, Iterable[Union[Field, str]], List[Union[Field, str]], None
+]
 
 
 class GQLQueryBuilder:
@@ -143,7 +148,7 @@ class GQLQueryBuilder:
         return self.remove_duplicate_spaces(final_query)
 
 
-class TypedGQLQueryBuilder:
+class RequestBuilder:
     """Class that represents a typed GraphQL Query Builder
 
     The typed graphql builder takes the operation type,
@@ -163,84 +168,123 @@ class TypedGQLQueryBuilder:
         settings: Settings,
     ):
         self.settings: Settings = settings
-        self.op_type: str = operation_type
-        self.op_field: SchemaField = operation_field
-        self.op_name: str = self.op_field.name
-        self.op_inputs: Dict[str, SchemaInput] = self.op_field.arg_name_to_arg
-        self.op_output: Optional[SchemaType] = schema.types_registry.get(
-            self.op_field.output_type_name
-        )
+        self.operation_type: str = operation_type
+        self.operation_field: SchemaField = operation_field
+        self.operation_name: str = self.operation_field.name
+        self.operation_inputs: Dict[
+            str, SchemaInput
+        ] = self.operation_field.arg_name_to_arg
+        self.operation_output: SchemaType = schema.types_registry[
+            self.operation_field.output_type_name
+        ]
         self.schema: Schema = schema
-        self.builder: GQLQueryBuilder = GQLQueryBuilder()
-        self.builder.operation(self.op_type, self.op_name)
-        self.builder.action(self.op_name)
 
-        self._fields: Optional[PreparedFields] = None
-        self._operation_variables: Optional[Dict[str, Any]] = {}
-        self._action_variables: Optional[Dict[str, Any]] = {}
+        self._fields: _AnyField = None
+        self._context: Any = None
+        self._root: Any = None
+        self._inputs: Optional[Dict[str, JSON]] = None
 
-    def fields(self, *args, **kwargs) -> Dict[str, Any]:
-        """Method to programmatically create a type safe field selection.
+    def context(self, context: GraphQLContextType) -> "RequestBuilder":
+        """Method to set the request context"""
+        self._context = context
+        return self
 
-        This method takes the *args and **kwargs and creates a "Fields" instances.
-        It then prepares this Fields instance.
+    def root(self, root: GraphQLRootType) -> "RequestBuilder":
+        """Method to set the request root"""
+        self._root = root
+        return self
 
-        Args:
-            *args: holds an iterable of fields (e.g. "firstname", "lastname", ...)
-            **kwargs: holds a dictionary for simple deeper field selection.
+    def fields(
+        self,
+        fields: _AnyField,
+    ) -> "RequestBuilder":
+        """Method to set the field selection"""
+        self._fields = fields
+        return self
 
-        Returns:
-            a dictionary with declared variable references mapped to their values
-        """
-        self._fields = Fields(*args, **kwargs).prepare(self.op_output, self.schema)
-        for var_ref, var_type_ref in self._fields.var_ref_to_var_type.items():
-            prefixed_key = f"${var_ref}"
-            self._operation_variables[prefixed_key] = var_type_ref.__gql__()
+    def variables(self, **inputs: JSON) -> "RequestBuilder":
+        """Method to set the request variables"""
+        self._inputs = inputs
+        return self
 
-        return self._fields.var_ref_to_var_value
-
-    def variables(self, **kwargs) -> Dict[str, Any]:
-        """Method to register operation level variables.
-
-        Args:
-            **kwargs: holds a dictionary with variable key mapped to variable value
-
-        Returns:
-            a dictionary with declared variable references mapped to their values
-        """
-        for key in kwargs:
-            if self.settings.validate_variables and key not in self.op_inputs:
-                raise KeyError(
-                    f"Input `{key}` not supported "
-                    f"for {self.op_type} operation `{self.op_name}`"
-                )
-            _input: SchemaInput = self.op_inputs[key]
-            prefixed_key = f"${key}"
-            self._operation_variables[prefixed_key] = _input.type.__gql__()
-            self._action_variables[key] = prefixed_key
-
-        return kwargs
-
-    def build(self) -> str:
+    def build(self) -> GraphQLRequest:
         """Method to build the graphql query string from all given inputs
 
         Returns:
             the graphql query string
         """
-        if self._fields is not None:
-            self.builder.fields(self._fields.__gql__())
-        if self._operation_variables is not None:
-            self.builder.operation(
-                self.op_type, self.op_name, self._operation_variables
+        query_builder: GQLQueryBuilder = GQLQueryBuilder()
+        query_builder.operation(self.operation_type, self.operation_name)
+        query_builder.action(self.operation_name)
+
+        _operation_variables: Dict[str, JSON] = {}
+        _action_variables: Dict[str, JSON] = {}
+
+        # build fields
+        _fields = self._fields
+        _inputs = self._inputs.copy()
+
+        if _fields is auto and self.settings.allow_auto_lookup:
+            # automatically build a Fields structure
+            _fields = self._auto_build_fields()
+        if isinstance(_fields, (list, set, tuple, Iterable)):
+            # convert the list, set, tuple or iterable to a Fields object
+            _fields = Fields(*_fields)
+        if isinstance(_fields, Fields):
+            # prepare the fields
+            _fields = _fields.prepare(
+                self.operation_output,
+                self.schema,
             )
-        if self._action_variables is not None:
-            self.builder.action(self.op_name, self._action_variables)
-        return self.builder.build()
 
-    def __gql__(self) -> str:
-        """Method to build the graphql query string from all given inputs
+        #
+        if _fields and isinstance(_fields, PreparedFields):
+            query_builder.fields(_fields.__gql__())
 
-        Returns:
-            the graphql query string
-        """
-        return self.build()
+        # add the variables from the input
+        for key in _inputs:
+            if key not in self.operation_inputs:
+                raise KeyError(f"Input {key} not supported for {self.operation_name}")
+
+            _input = self.operation_inputs[key]
+            _operation_variables[f"${key}"] = _input.type.graphql_representation
+            _action_variables[key] = f"${key}"
+
+        if _operation_variables is not None:
+            query_builder.operation(
+                self.operation_type, self.operation_name, _operation_variables
+            )
+        if _action_variables is not None:
+            query_builder.action(self.operation_name, _action_variables)
+
+        query = query_builder.build()
+
+        return GraphQLRequest(
+            query=query,
+            variables=_inputs,
+            operation_name=self.operation_name,
+            context=self._context,
+            root=self._root,
+        )
+
+    # skipcq: PY-D0003
+    def _auto_build_fields(self) -> Fields:
+        return self._lookup_fields_for_type(self.operation_output, 0)
+
+    # skipcq: PY-D0003
+    def _lookup_fields_for_type(self, _type: SchemaType, depth: int) -> Fields:
+        _fields = Fields()
+        for field in _type.fields:
+            if field.is_object_kind:
+                if depth >= self.settings.lookup_recursion_depth:
+                    continue
+
+                _fields += {
+                    field.name: self._lookup_fields_for_type(
+                        _type=field.output_type,
+                        depth=depth + 1,
+                    )
+                }
+            elif field.is_scalar_kind:
+                _fields += field.name
+        return _fields

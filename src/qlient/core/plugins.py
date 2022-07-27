@@ -1,4 +1,3 @@
-import abc
 from typing import List
 
 from qlient.core.models import (
@@ -7,10 +6,10 @@ from qlient.core.models import (
 )
 
 
-class Plugin(abc.ABC):
+class Plugin:
     """Base plugin"""
 
-    @abc.abstractmethod
+    # skipcq: PYL-R0201
     def pre(self, request: GraphQLRequest) -> GraphQLRequest:
         """Override to make changes to the request before giving it to the backend
 
@@ -22,7 +21,7 @@ class Plugin(abc.ABC):
         """
         return request
 
-    @abc.abstractmethod
+    # skipcq: PYL-R0201
     def post(self, response: GraphQLResponse) -> GraphQLResponse:
         """Override to update the response when the result is in
 

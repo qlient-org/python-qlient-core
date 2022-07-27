@@ -112,7 +112,7 @@ class Client:
         class_name = self.__class__.__name__
         props = ", ".join(
             [
-                f"endpoint={self.backend}",
+                f"backend={self.backend}",
                 f"settings={self.settings}",
             ]
         )

@@ -6,11 +6,13 @@ class Settings:
 
     def __init__(
         self,
-        validate_variables: bool = True,
         use_schema_description: bool = True,
+        allow_auto_lookup: bool = True,
+        lookup_recursion_depth: int = 1,
     ):
-        self.validate_variables: bool = validate_variables
         self.use_schema_description: bool = use_schema_description
+        self.allow_auto_lookup: bool = allow_auto_lookup
+        self.lookup_recursion_depth: int = lookup_recursion_depth
 
     def __str__(self) -> str:
         """Return a simple string representation of the settings"""
@@ -21,7 +23,8 @@ class Settings:
         class_name = self.__class__.__name__
         return (
             f"<{class_name}("
-            f"validate_variables={self.validate_variables}, "
-            f"use_schema_description={self.use_schema_description}"
+            f"use_schema_description={self.use_schema_description}, "
+            f"allow_auto_lookup={self.allow_auto_lookup}, "
+            f"lookup_recursion_depth={self.lookup_recursion_depth}"
             f")>"
         )

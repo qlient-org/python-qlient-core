@@ -14,6 +14,7 @@ from qlient.core import (
     GraphQLSubscriptionRequest,
     GraphQLResponse,
     Plugin,
+    Client,
 )
 
 project_dir = pathlib.Path(pathlib.Path().resolve())
@@ -25,6 +26,7 @@ else:
 
 schema_files_dir = tests_dir / "schema_files"
 path_to_swapi_schema = schema_files_dir / "swapi_schema.json"
+path_to_github_schema = schema_files_dir / "github_schema.json"
 
 
 @pytest.fixture(scope="session")
@@ -33,11 +35,24 @@ def raw_swapi_schema():
         return json.load(f)
 
 
+@pytest.fixture(scope="session")
+def raw_github_schema():
+    with open(path_to_github_schema) as f:
+        return json.load(f)
+
+
 @pytest.fixture
 def swapi_schema(raw_swapi_schema):
     from qlient.core.schema.schema import Schema
 
     return Schema(raw_swapi_schema, None)
+
+
+@pytest.fixture
+def github_schema(raw_github_schema):
+    from qlient.core.schema.schema import Schema
+
+    return Schema(raw_github_schema["data"]["__schema"], None)
 
 
 @pytest.fixture
@@ -107,7 +122,11 @@ def strawberry_backend(strawberry_schema) -> Backend:
 
         # skipcq: PYL-R0201
         def execute_subscription(self, request: GraphQLRequest) -> GraphQLResponse:
-            raise NotImplementedError
+            def _gen():
+                for index in range(5):
+                    yield {"data": {request.operation_name: {"count": index}}}
+
+            return GraphQLResponse(request, _gen())
 
         def __str__(self) -> str:
             return self.__class__.__name__
@@ -210,3 +229,19 @@ class _MyPlugin(Plugin):
 @pytest.fixture
 def my_plugin() -> _MyPlugin:
     return _MyPlugin()
+
+
+class _FakeBackend(Backend):
+    # skipcq: PYL-R0201
+    def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
+        return GraphQLResponse(request, {"data": {}, "errors": [], "extensions": []})
+
+
+@pytest.fixture
+def fake_backend() -> _FakeBackend:
+    return _FakeBackend()
+
+
+@pytest.fixture
+def swapi_client(swapi_schema, fake_backend) -> Client:
+    return Client(fake_backend, swapi_schema)
