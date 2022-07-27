@@ -25,15 +25,19 @@ all_users: List[User] = [
 
 @strawberry.type
 class Query:
+    """The strawberry query type"""
+
     @strawberry.field
-    async def get_user(self, index: int) -> Optional[User]:  # skipcq: PY-D0003
+    async def get_user(self, index: int) -> Optional[User]:
+        """Get a user by index"""
         try:
             return all_users[index]
         except IndexError:
             return None
 
     @strawberry.field
-    async def get_users(self) -> List[User]:  # skipcq: PY-D0003
+    async def get_users(self) -> List[User]:
+        """Get all users"""
         return all_users
 
 
@@ -41,8 +45,10 @@ schema = strawberry.Schema(query=Query)
 
 
 class StrawberryBackend(AsyncBackend):
-    # skipcq: PYL-R0201 PY-D0003
+    """The strawberry backend"""
+
     async def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
+        """Execute a query on this backend"""
         # get the result
         result = await schema.execute(
             query=request.query,
@@ -63,8 +69,9 @@ class StrawberryBackend(AsyncBackend):
         )
 
 
-# skipcq: PY-D0003
 async def main():
+    """The main coroutine"""
+
     async with AsyncClient(StrawberryBackend()) as client:
         # strawberry automatically converts snake_case to camelCase
         result_1: GraphQLResponse = await client.query.getUsers(["name", "age"])
