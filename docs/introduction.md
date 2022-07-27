@@ -21,6 +21,8 @@ import strawberry  # must be installed separately
 
 @strawberry.type
 class User:
+    """The User object"""
+
     name: str
     age: int
 ```
@@ -43,9 +45,11 @@ With a few initial users in that list, we can now create the Query type and sche
 ```python
 @strawberry.type
 class Query:
+    """The strawberry query type"""
 
     @strawberry.field
     async def get_user(self, index: int) -> Optional[User]:
+        """Get a user by index"""
         try:
             return all_users[index]
         except IndexError:
@@ -53,10 +57,11 @@ class Query:
 
     @strawberry.field
     async def get_users(self) -> List[User]:
+        """Get all users"""
         return all_users
 
 
-schema = strawberry.Schema(query=Query)
+my_schema = strawberry.Schema(query=Query)
 ```
 
 ### Implement an AsyncBackend
@@ -68,10 +73,14 @@ from qlient.core import AsyncBackend, GraphQLRequest, GraphQLResponse
 
 
 class StrawberryBackend(AsyncBackend):
+    """The strawberry backend"""
+
+    def __init__(self, schema: strawberry.Schema):
+        self.schema = schema
 
     async def execute_query(self, request: GraphQLRequest) -> GraphQLResponse:
-        # get the result from the strawberry graphql schema
-        result = await schema.execute(
+        """Execute a query on this backend"""
+        result = await self.schema.execute(
             query=request.query,
             operation_name=request.operation_name,
             variable_values=request.variables,
@@ -86,7 +95,7 @@ class StrawberryBackend(AsyncBackend):
                 "data": result.data,
                 "errors": result.errors,
                 "extensions": result.extensions,
-            }
+            },
         )
 ```
 
@@ -100,11 +109,12 @@ from qlient.core import AsyncClient, GraphQLResponse
 
 
 async def main():
-    async with AsyncClient(StrawberryBackend()) as client:
+    """The main coroutine"""
+    async with AsyncClient(StrawberryBackend(my_schema)) as client:
         # strawberry automatically converts snake_case to camelCase
         result_1: GraphQLResponse = await client.query.getUsers(["name", "age"])
         print(result_1.data)
-        
+
         result_2: GraphQLResponse = await client.query.getUser(index=1)
         print(result_2.data)
 
